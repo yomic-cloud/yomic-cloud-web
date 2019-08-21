@@ -8,14 +8,6 @@ export default [
       {
         code: 'USER'
       }
-    ],
-    authorities: [
-      {
-        pid: `${prefix}`
-      },
-      {
-        pid: `${prefix}.dashboard`
-      }
     ]
   },
   {
@@ -24,19 +16,13 @@ export default [
       {
         code: 'ADMIN'
       }
-    ],
-    authorities: [
+    ]
+  },
+  {
+    username: 'root',
+    roles: [
       {
-        pid: `${prefix}`
-      },
-      {
-        pid: `${prefix}.dashboard`
-      },
-      {
-        pid: `${prefix}.system`
-      },
-      {
-        pid: `${prefix}.system.user`
+        code: 'SUPER'
       }
     ]
   }

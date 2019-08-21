@@ -1,4 +1,5 @@
 import { http } from '.'
+import { getAuthorities } from '@/common/resource'
 
 export interface LoginReq {
     username: string
@@ -18,5 +19,7 @@ export function logout () {
 }
 
 export function loadPrinciple () {
-  return http().get<any>(`/principle`)
+  return http().get<any>(`/principle`).then((v: any) => {
+    return Object.assign(v, { authorities: getAuthorities((v.roles || []).map((w: any) => w.code)) })
+  })
 }
