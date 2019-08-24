@@ -12,7 +12,7 @@ import DeptTree from './dept-tree/index.vue'
 import DeptDetail from './dept-detail/index.vue'
 
 @Component({
-    components: { DeptTree, DeptDetail }
+  components: { DeptTree, DeptDetail }
 })
 export default class Dept extends Vue {
 

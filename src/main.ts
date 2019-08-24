@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import install from './plugins'
 import 'nprogress/nprogress.css'
+import '@/styles/index.scss'
 
 Vue.config.productionTip = false
 

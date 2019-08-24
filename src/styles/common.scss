@@ -1,0 +1,10 @@
+.icon-btn {
+    color: var(--disabled-color);
+    transition: color .35s linear;
+    &:hover {
+        color: var(--text-color-secondary);
+    }
+    &:active {
+        color:  var(--primary-base);
+    }
+}
