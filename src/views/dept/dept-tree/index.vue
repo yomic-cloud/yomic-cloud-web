@@ -6,7 +6,7 @@
             <span class="mx-2 icon-btn" @click="onCollapse"><v-icon type="switcher"></v-icon></span>
         </div>
         <v-tree node-key="key" :data-source="dataSource" ref="tree" :class="[$style.tree]" class="mt-3">
-            <div slot="content"  slot-scope="{node}" :class="[$style.content]" class="d-flex justify-content-between">
+            <div slot="content"  slot-scope="{node}" @click="onSelect(node)" :class="[$style.content]" class="d-flex justify-content-between">
                 <span class="mr-4">{{node.data.label}}</span>
                 <div @click.stop="" class="_flag_actions">
                     <span class="icon-btn" @click="onAdd(node.data)"><v-icon type="plus"></v-icon></span>
@@ -22,7 +22,7 @@
 
 <script lang="ts">
 
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Emit, Prop } from 'vue-property-decorator'
 import { queryDepts, deleteDept } from '@/api/dept'
 import { toCascade } from '@/helpers/data'
 import EditDept from './edit-dept/index.vue'
@@ -43,7 +43,11 @@ const mapper = (dept: any) => {
   components: { EditDept }
 })
 export default class DeptTree extends Vue {
+    @Prop(Number)id!: number
+
     dataSource: any[] = []
+
+    @Emit('update:id') updateId (id: number | null) {}
 
     onAdd (parent: any) {
       const $e = this.$refs.editDept as EditDept
@@ -85,6 +89,10 @@ export default class DeptTree extends Vue {
     onCollapse () {
       const $e = this.$refs.tree as any
       $e.expandAll(false)
+    }
+
+    onSelect (node: any) {
+      this.updateId(node.data.id)
     }
 
     loadDepts () {

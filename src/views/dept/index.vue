@@ -1,7 +1,7 @@
 <template>
     <div :class="[$style.container]">
-        <dept-tree :class="[$style.tree]"></dept-tree>
-        <dept-detail :class="[$style.detail]"></dept-detail>
+        <dept-tree :id.sync="id" :class="[$style.tree]"></dept-tree>
+        <dept-detail :id="id" :class="[$style.detail]"></dept-detail>
     </div>
 </template>
 
@@ -15,7 +15,7 @@ import DeptDetail from './dept-detail/index.vue'
   components: { DeptTree, DeptDetail }
 })
 export default class Dept extends Vue {
-
+    id: number | null = null
 }
 </script>
 
