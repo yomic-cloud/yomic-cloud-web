@@ -9,7 +9,9 @@ export default class authorities extends Controller {
     let isUser = !!req.query.isUser
     let principleId = (+req.query.principleId) || undefined
     let fileId = (+req.query.fileId) || undefined
-    let model = { isUser, principleId, fileId }
+    let model = { isUser }
+    if (principleId) model.principleId = principleId
+    if (fileId) model.fileId = fileId
     return this.collection.find(model)
   }
 

@@ -43,7 +43,7 @@ export interface AuthorityRes {
 }
 
 export function queryAuthorities (req: AuthorityQueryReq) {
-  return http().get<AuthorityQueryRes[]>(`/depts`, { params: req })
+  return http().get<AuthorityQueryRes[]>(`/authorities`, { params: req })
 }
 
 export function addAuthority (req: AuthorityAddReq) {
@@ -51,13 +51,13 @@ export function addAuthority (req: AuthorityAddReq) {
 }
 
 export function patchAuthority (id: number, isUser: boolean, req: AuthorityPatchReq) {
-  return http().patch<void>(`/depts/${id}`, req, { params: { isUser } })
+  return http().patch<void>(`/authorities/${id}`, req, { params: { isUser } })
 }
 
 export function getAuthority (id: number, isUser: boolean) {
-  return http().get<AuthorityRes>(`/depts/${id}`, { params: { isUser } })
+  return http().get<AuthorityRes>(`/authorities/${id}`, { params: { isUser } })
 }
 
 export function deleteAuthority (id: number, isUser: boolean) {
-  return http().delete<void>(`/depts/${id}`, { params: { isUser } })
+  return http().delete<void>(`/authorities/${id}`, { params: { isUser } })
 }
