@@ -13,7 +13,7 @@
             </v-checkbox-group>
           </div>
           <div>
-
+            <file-selector></file-selector>
           </div>
         </div>
 
@@ -30,8 +30,11 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { addAuthority, patchAuthority } from '@/api/authority'
 import { UMASK, toUmask, toArray } from '@/common/umask'
+import FileSelector from './file-selector/index.vue'
 
-@Component
+@Component({
+  components: { FileSelector }
+})
 export default class EditAuthority extends Vue {
   authority: any = null
 

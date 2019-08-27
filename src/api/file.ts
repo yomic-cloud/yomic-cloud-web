@@ -13,6 +13,9 @@ export interface FileQueryReq {
 }
 
 export interface FileQueryRes {
+  id: number
+
+  parentId?: number
 
   dir: boolean
 
@@ -74,6 +77,10 @@ export interface FilePatchReq {
 }
 
 export interface FileRes {
+  id: number
+
+  parentId?: number
+
   dir: boolean
 
   name: string

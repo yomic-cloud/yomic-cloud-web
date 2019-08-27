@@ -1,32 +1,44 @@
-export default [
-  {
-    parentId: -1,
-    name: '总部门',
-    id: 1
-  },
-  {
-    parentId: 1,
-    name: 'IT部门',
-    id: 11
-  },
-  {
-    parentId: 1,
-    name: '人事部',
-    id: 21
-  },
-  {
-    parentId: 1,
-    name: '行政部',
-    id: 31
-  },
-  {
-    parentId: 11,
-    name: '前端部门',
-    id: 101
-  },
-  {
-    parentId: 11,
-    name: 'Java部门',
-    id: 111
+import Mock from 'mockjs'
+
+function template (children, id = 1) {
+  let data = {
+    'id|+1': id,
+    'dir|1-3': true,
+    name: '@cword(2,16)',
+    contentType: '@word(2,4)',
+    'size|1000-100000': 1,
+    'uuid': '@guid',
+    creationBy: '@name',
+    creationTime: '@datetime(yyyy/MM/dd HH:mm:ss)',
+    lastChangeBy: '@name',
+    lastChangeTime: '@datetime(yyyy/MM/dd HH:mm:ss)',
+    'status|8-9': true,
+    'limitSize|1000-100000': 1,
+    limitSuffix: '@word(2,4)',
+    'personal|1-10': true
   }
-]
+
+  if (children) {
+    Object.assign(data, { 'children|5-10': children })
+  }
+
+  return [data]
+}
+const data = Mock.mock({
+  'list|5-20': template(template(template(template(null, 1000000), 100000), 10000))
+}).list
+
+function toArray (tree, parentId = null) {
+  let ret = []
+  tree.forEach(v => {
+    if (Array.isArray(v.children)) {
+      ret.push(...toArray(v.children, v.id))
+    }
+    delete v.children
+    v.parentId = parentId
+    ret.push(v)
+  })
+  return ret
+}
+
+export default toArray(data)
