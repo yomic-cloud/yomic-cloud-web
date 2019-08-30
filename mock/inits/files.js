@@ -28,14 +28,16 @@ const data = Mock.mock({
   'list|5-20': template(template(template(template(null, 1000000), 100000), 10000))
 }).list
 
-function toArray (tree, parentId = null) {
+function toArray (tree, parent) {
   let ret = []
   tree.forEach(v => {
+    if (parent && !parent.dir) return
     if (Array.isArray(v.children)) {
-      ret.push(...toArray(v.children, v.id))
+      ret.push(...toArray(v.children, v))
     }
     delete v.children
-    v.parentId = parentId
+    v.parentId = (parent && parent.id) || null
+    if (parent && parent.personal) v.personal = true
     ret.push(v)
   })
   return ret

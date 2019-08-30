@@ -8,7 +8,7 @@ export default class files extends Controller {
     let model = req.query
     delete model._t
     let parentId = model.parentId
-    if (parentId) model.parentId = parentId > 0 ? parentId : null
+    if (parentId) model.parentId = parentId > 0 ? +parentId : null
     return this.collection.find(model)
   }
 

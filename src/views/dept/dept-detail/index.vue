@@ -1,17 +1,19 @@
 <template>
     <div class="p-3">
-        <v-card title="基本信息" class="mb-4">
-            <div v-if="dept">
+        <div>
+          <section-header>基本信息</section-header>
+          <div v-if="dept">
                 <span>
-                    <span>部门名称: <span>{{dept && dept.name}}</span></span>
+                    <span> <span class="text-secondary mr-3">部门名称:</span> <span>{{dept && dept.name}}</span></span>
                 </span>
             </div>
-        </v-card>
+        </div>
 
-        <v-card title="文件权限列表">
-            <div v-if="dept">
+        <div class="mt-4">
+          <section-header>权限列表</section-header>
+          <div v-if="dept">
               <div class="mb-2 text-right">
-                <v-button type="primary" @click="onAdd">新增权限</v-button>
+                <v-button type="text" size="small" color="primary" @click="onAdd">新增权限</v-button>
               </div>
               <v-table :data-source="authorities">
                   <v-table-column prop="fileName" label="文件/文件夹"></v-table-column>
@@ -24,7 +26,7 @@
                   </v-table-column>
               </v-table>
             </div>
-        </v-card>
+        </div>
 
         <edit-authority ref="editAuthority"></edit-authority>
     </div>

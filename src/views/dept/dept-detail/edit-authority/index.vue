@@ -2,7 +2,7 @@
     <div>
       <v-modal :visible.sync="actualVisible" width="60vw" :title="title">
 
-        <div :class="[$style.body]">
+        <div :class="[$style.body]" v-if="visible">
           <div :class="[$style.bodyLeft]">
             <v-checkbox-group v-model="form.bits">
               <v-row :gutter="16">
@@ -12,8 +12,9 @@
               </v-row>
             </v-checkbox-group>
           </div>
-          <div>
-            <file-selector></file-selector>
+          <div class="border-left pl-3">
+            <div class="mb-3"><span class="text-secondary">已选择文件：</span> <span class="ml-3 text-info">{{fileId}}</span></div>
+            <file-selector :id.sync="fileId"></file-selector>
           </div>
         </div>
 
@@ -39,6 +40,8 @@ export default class EditAuthority extends Vue {
   authority: any = null
 
   UMASK = UMASK
+
+  fileId: number | null = null
 
   form: any = {
     fileId: null,
