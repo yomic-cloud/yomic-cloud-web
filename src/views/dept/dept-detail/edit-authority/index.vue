@@ -13,8 +13,7 @@
             </v-checkbox-group>
           </div>
           <div class="border-left pl-3">
-            <div class="mb-3"><span class="text-secondary">已选择文件：</span> <span class="ml-3 text-info">{{fileId}}</span></div>
-            <file-selector :id.sync="fileId"></file-selector>
+            <file-selector :id.sync="form.fileId"></file-selector>
           </div>
         </div>
 
@@ -39,16 +38,15 @@ import FileSelector from './file-selector/index.vue'
 export default class EditAuthority extends Vue {
   authority: any = null
 
-  UMASK = UMASK
+  principleId: number | null = null
 
-  fileId: number | null = null
+  UMASK = UMASK
 
   form: any = {
     fileId: null,
     umask: 0,
     set bits (value: number[]) {
       this.umask = toUmask(value)
-      debugger
     },
     get bits () {
       return toArray(this.umask)
@@ -77,8 +75,9 @@ export default class EditAuthority extends Vue {
     return this.isEdit ? '编辑文件权限' : '新增文件权限'
   }
 
-  add (): Promise<any> {
+  add (principleId: number): Promise<any> {
     this.authority = null
+    this.principleId = principleId
     return this.init()
   }
 
@@ -121,7 +120,8 @@ export default class EditAuthority extends Vue {
   generateReq () {
     let req: any = {}
     let isUser = false
-    Object.assign(req, this.form, { isUser })
+    let principleId = this.isEdit ? this.authority.principleId : this.principleId
+    Object.assign(req, this.form, { isUser, principleId })
     if (this.isEdit) {
       req.id = this.authority && this.authority.id
     }
@@ -134,6 +134,7 @@ export default class EditAuthority extends Vue {
 .body {
   display: flex;
   height: calc(100vh - 320px);
+  overflow: auto;
 }
 
 .bodyLeft {

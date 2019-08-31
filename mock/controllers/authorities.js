@@ -21,7 +21,7 @@ export default class authorities extends Controller {
     let id = index++
     let model = req.body
     let mockExt = Mock.mock({ fileName: '@cword(2, 8)', principleName: '@cname', isDir: '@boolean' })
-    Object.assign(mock, { isUser, id }, mockExt)
+    Object.assign(model, { isUser, id }, mockExt)
     return this.collection.insert(model)
   }
 

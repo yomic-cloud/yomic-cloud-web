@@ -15,7 +15,10 @@ export default function install (): void {
   Vue.use(Auth, {
     login,
     logout,
-    loadPrinciple
+    loadPrinciple,
+    token: {
+      enabled: false
+    }
   })
   Vue.use(Http, {
     baseURL: 'http://localhost:3000'

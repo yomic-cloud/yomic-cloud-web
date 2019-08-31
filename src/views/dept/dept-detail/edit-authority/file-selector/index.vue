@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="mb-3"><span class="text-secondary">已选择文件：</span> <span class="ml-3 text-info">{{file && file.name}}</span></div>
     <v-tree node-key="key" :data-source="dataSource" lazy :load-fn="loadFn" ref="tree" :class="[$style.tree]">
       <template slot="indicator" slot-scope="{node}">
         <i class="anticon anticon-folder ft-lg" v-if="node.data.dir"></i>
@@ -15,7 +16,7 @@
 <script lang="ts">
 
 import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
-import { queryFiles } from '@/api/file'
+import { queryFiles, getFile } from '@/api/file'
 import { toCascade } from '@/helpers/data'
 
 @Component
@@ -23,6 +24,8 @@ export default class FileSelector extends Vue {
   @Prop(Number) id!: number
 
   @Emit('update:id') updateId (id: number) {}
+
+  file: any = null
 
   dataSource: any[] = []
 
@@ -34,6 +37,7 @@ export default class FileSelector extends Vue {
   }
 
   onSelect (node: any) {
+    this.file = node.data
     this.updateId(node.data.id)
   }
 
@@ -45,8 +49,19 @@ export default class FileSelector extends Vue {
     })
   }
 
+  loadFile () {
+    if (!this.id) {
+      this.file = null
+      return
+    }
+    getFile(this.id).then(data => {
+      this.file = data || null
+    })
+  }
+
   mounted () {
     this.loadData()
+    this.loadFile()
   }
 }
 </script>
@@ -54,6 +69,5 @@ export default class FileSelector extends Vue {
 <style lang="scss" module>
 .tree {
   overflow: auto;
-  height: 360px;
 }
 </style>

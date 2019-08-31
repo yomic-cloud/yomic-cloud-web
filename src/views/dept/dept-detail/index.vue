@@ -17,7 +17,9 @@
               </div>
               <v-table :data-source="authorities">
                   <v-table-column prop="fileName" label="文件/文件夹"></v-table-column>
-                  <v-table-column prop="umask" label="权限"></v-table-column>
+                  <v-table-column prop="umask" label="权限">
+                    <template slot-scope="{row}">{{row.umask | umask}}</template>
+                  </v-table-column>
                   <v-table-column prop="opt" label="操作" fixed="right" width="120px">
                       <template slot-scope="{row}">
                           <span class="icon-btn" @click="onEdit(row)"><v-icon type="edit"></v-icon></span>
@@ -51,7 +53,7 @@ export default class DeptDetail extends Vue {
 
     onAdd () {
       const $e = this.$refs.editAuthority as EditAuthority
-      $e.add().then(() => {
+      $e.add(this.dept && this.dept.id).then(() => {
         this.$message.success('添加成功')
         this.loadAuthorities()
       })
@@ -88,7 +90,7 @@ export default class DeptDetail extends Vue {
         return
       }
       queryAuthorities({
-        isUser: false,
+        isUser: undefined,
         principleId: this.id
       }).then(data => {
         this.authorities = data || []

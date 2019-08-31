@@ -6,6 +6,7 @@ import install from './plugins'
 import 'nprogress/nprogress.css'
 import '@/styles/index.scss'
 import '@/components'
+import '@/filters'
 
 Vue.config.productionTip = false
 
