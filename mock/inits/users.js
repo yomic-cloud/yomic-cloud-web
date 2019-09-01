@@ -4,6 +4,11 @@ const prefix = 'home'
 export default [
   {
     username: 'user',
+    cname: '普通用户',
+    status: true,
+    ip: '',
+    deptId: null,
+    deptName: '',
     roles: [
       {
         code: 'USER'
@@ -12,6 +17,11 @@ export default [
   },
   {
     username: 'admin',
+    cname: '文件夹管理员',
+    status: true,
+    ip: '',
+    deptId: null,
+    deptName: '',
     roles: [
       {
         code: 'ADMIN'
@@ -20,6 +30,11 @@ export default [
   },
   {
     username: 'root',
+    cname: '超级管理员',
+    status: true,
+    ip: '',
+    deptId: null,
+    deptName: '',
     roles: [
       {
         code: 'SUPER'
