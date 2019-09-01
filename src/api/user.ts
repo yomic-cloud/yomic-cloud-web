@@ -3,8 +3,8 @@ import { http } from '.'
 export interface UserQueryReq {
   username?: string
   cname?: string
-  deptId?: number
-  status?: boolean
+  deptId?: number | null
+  status?: boolean | null
 }
 
 export interface UserQueryRes {

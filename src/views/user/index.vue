@@ -21,7 +21,7 @@
                 </v-form-item>
 
                 <v-form-item >
-                   <v-button type="primary">查询</v-button>
+                   <v-button type="primary" @click="onSearch">查询</v-button>
                    <v-button class="ml-3">重置</v-button>
                 </v-form-item>
             </v-form>
@@ -34,8 +34,16 @@
                   <v-table-column prop="deptName" label="所属部门"></v-table-column>
                   <v-table-column prop="ip" label="ip"></v-table-column>
                   <v-table-column prop="status" label="状态"></v-table-column>
+                  <v-table-column prop="opt" label="操作" fixed="right" width="120px">
+                      <template slot-scope="{row}">
+                          <span class="icon-btn" @click="onEdit(row)"><v-icon type="edit"></v-icon></span>
+                          <span class="ml-3 icon-btn" @click="onDelete(row.id)"><v-icon type="delete"></v-icon></span>
+                          <span class="ml-3 icon-btn" @click="onViewAuthority(row.id)" title="查看权限"><v-icon type="eye-o"></v-icon></span>
+                      </template>
+                  </v-table-column>
               </v-table>
         </div>
+        <user-authority :visible.sync="authorityVisible"></user-authority>
     </div>
 </template>
 
@@ -43,13 +51,16 @@
 
 import { Vue, Component } from 'vue-property-decorator'
 import { queryUsers } from '@/api/user'
+import UserAuthority from './authority/index.vue'
 
-@Component
+@Component({
+  components: { UserAuthority }
+})
 export default class User extends Vue {
     form = {
       username: '',
       cname: '',
-      deptId: '',
+      deptId: null,
       status: null
     }
 
@@ -57,14 +68,39 @@ export default class User extends Vue {
 
     dataSource: any[] = []
 
-    // loadData () {
-    //     queryUsers().then(data => {
-    //         this.dataSource = data || []
-    //     })
-    // }
+    authorityVisible: boolean = false
+
+    onSearch () {
+      this.query()
+    }
+
+    onAdd () {
+
+    }
+
+    onEdit (row: any) {
+
+    }
+
+    onDelete (id: any) {
+
+    }
+
+    onViewAuthority (id: any) {
+      this.authorityVisible = true
+    }
+
+    query () {
+      this.loading = true
+      queryUsers(this.form).then(data => {
+        this.dataSource = data || []
+      }).finally(() => {
+        this.loading = false
+      })
+    }
 
     mounted () {
-        // this.loadData()
+      this.query()
     }
 }
 </script>

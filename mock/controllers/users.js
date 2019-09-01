@@ -26,6 +26,7 @@ export default class users extends Controller {
   @RequestMapping({ url: '/users', method: 'get' })
   query (req, res, context) {
     let model = normalize(req.query)
+    console.log(model, '000000000')
     return this.collection.find(model)
   }
 
@@ -52,7 +53,7 @@ export default class users extends Controller {
   @RequestMapping({ url: '/users/:id', method: 'patch' })
   patch (req, res, context) {
     let id = +req.params.id
-    let model = normalize(req.body, true)
+    let model = normalize(req.body, false)
     let user = this.collection.find({ id })[0]
     if (!user) throw new Error(`not found user [${id}]`)
     if (model.deptId) {
