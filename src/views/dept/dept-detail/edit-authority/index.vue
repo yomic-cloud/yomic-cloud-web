@@ -4,9 +4,11 @@
 
         <div :class="[$style.body]" v-if="visible">
           <div :class="[$style.bodyLeft]">
+            <v-checkbox v-model="allChecked">全部</v-checkbox>
+            <v-checkbox v-model="noneChecked">禁用</v-checkbox>
             <v-checkbox-group v-model="form.bits">
               <v-row :gutter="16">
-                <v-col :span="8" v-for="(item, key) in UMASK" :key="key">
+                <v-col :span="8" v-for="(item, key) in umasks" :key="key">
                   <v-checkbox :label="item.value">{{item.desc}}</v-checkbox>
                 </v-col>
               </v-row>
@@ -29,7 +31,7 @@
 
 import { Vue, Component } from 'vue-property-decorator'
 import { addAuthority, patchAuthority } from '@/api/authority'
-import { UMASK, toUmask, toArray } from '@/common/umask'
+import { UMASK, toUmask, toArray, allUmask } from '@/common/umask'
 import FileSelector from './file-selector/index.vue'
 
 @Component({
@@ -40,7 +42,7 @@ export default class EditAuthority extends Vue {
 
   principleId: number | null = null
 
-  UMASK = UMASK
+  umasks = UMASK
 
   form: any = {
     fileId: null,
@@ -58,6 +60,22 @@ export default class EditAuthority extends Vue {
   reject: Function | null = null
 
   visible: boolean = false
+
+  get allChecked () {
+    return allUmask(this.form.umask)
+  }
+
+  set allChecked (value: boolean) {
+    if (value) this.form.umask = -1
+  }
+
+  get noneChecked () {
+    return this.form.umask === 0
+  }
+
+  set noneChecked (value: boolean) {
+    if (value) this.form.umask = 0
+  }
 
   get isEdit (): boolean {
     return !!this.authority
@@ -112,9 +130,19 @@ export default class EditAuthority extends Vue {
   }
 
   request (): Promise<number | void> {
+    const vm = this
     let req: any = this.generateReq()
+    if (!validate()) return Promise.reject(new Error('validate fail'))
     if (this.isEdit) return patchAuthority(this.authority.id, false, req)
     return addAuthority(req)
+
+    function validate (): boolean {
+      if (!req.fileId) {
+        vm.$message.warning('请选择文件/文件夹')
+        return false
+      }
+      return true
+    }
   }
 
   generateReq () {

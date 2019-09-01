@@ -16,6 +16,18 @@ export function hasAnyAuthority (umask: number, ...bits: number[]) {
   })
 }
 
+export function hasAllAuthority (umask: number, ...bits: number[]) {
+  return bits.every(v => {
+    return (umask & v) === v
+  })
+}
+
+export function allUmask (umask: number) {
+  if (umask === -1) return true
+  let bits = Object.values(UMASK).map((v: any) => v.value) as number[]
+  return hasAllAuthority(umask, ...bits)
+}
+
 export function toArray (umask: number) {
   let ret: any[] = []
   Object.keys(UMASK).forEach((key: string) => {

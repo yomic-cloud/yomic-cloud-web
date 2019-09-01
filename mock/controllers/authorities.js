@@ -40,7 +40,7 @@ export default class authorities extends Controller {
     let authority = this.collection.find({ id, isUser })[0]
     if (!authority) throw new Error(`not found authority [${id}]`)
     Object.assign(authority, model)
-    this.collection.update(dept)
+    this.collection.update(authority)
   }
 
   @RequestMapping({ url: '/authorities/:id', method: 'delete' })
