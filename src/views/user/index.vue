@@ -33,7 +33,9 @@
                   <v-table-column prop="cname" label="姓名"></v-table-column>
                   <v-table-column prop="deptName" label="所属部门"></v-table-column>
                   <v-table-column prop="ip" label="ip"></v-table-column>
-                  <v-table-column prop="status" label="状态"></v-table-column>
+                  <v-table-column prop="status" label="状态">
+                    <template slot-scope="{row}">{{row.status | transcode('status')}}</template>
+                  </v-table-column>
                   <v-table-column prop="opt" label="操作" fixed="right" width="120px">
                       <template slot-scope="{row}">
                           <span class="icon-btn" @click="onEdit(row)"><v-icon type="edit"></v-icon></span>
@@ -43,7 +45,7 @@
                   </v-table-column>
               </v-table>
         </div>
-        <user-authority :visible.sync="authorityVisible"></user-authority>
+        <user-authority :visible.sync="authorityVisible" v-bind="authorityProps"></user-authority>
     </div>
 </template>
 
@@ -68,6 +70,10 @@ export default class User extends Vue {
 
     dataSource: any[] = []
 
+    authorityProps = {
+      principleId: null
+    }
+
     authorityVisible: boolean = false
 
     onSearch () {
@@ -88,6 +94,7 @@ export default class User extends Vue {
 
     onViewAuthority (id: any) {
       this.authorityVisible = true
+      this.authorityProps.principleId = id
     }
 
     query () {
