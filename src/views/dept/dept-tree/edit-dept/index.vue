@@ -111,6 +111,7 @@ export default class EditDept extends Vue {
     Object.assign(req, { name, parentId })
     if (this.isEdit) {
       req.id = this.dept && this.dept.id
+      if (!req.parrentId) req.parrentId = -1
     }
     return req
   }

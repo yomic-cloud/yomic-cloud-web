@@ -1,7 +1,7 @@
 <template>
     <div>
        <div class="mb-2 text-right">
-            <v-button type="text" size="small" color="primary" @click="onAdd">新增权限</v-button>
+            <v-button type="text" size="sm" color="primary" @click="onAdd">新增权限</v-button>
         </div>
         <v-table :data-source="dataSource">
             <v-table-column prop="fileName" label="文件/文件夹"></v-table-column>
@@ -71,7 +71,7 @@ export default class Authority extends Vue {
       })
     }
 
-    @Watch('principleId') principleIdChange () {
+    @Watch('principleId', { immediate: true }) principleIdChange () {
       this.loadData()
     }
 }

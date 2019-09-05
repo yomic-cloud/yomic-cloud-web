@@ -1,62 +1,69 @@
 <template>
     <div>
         <div>
-            <v-form layout="horizontal" class="m-3">
+            <v-form layout="horizontal" class="mx-3 mt-3" :model="form" ref="form">
                 <v-form-item prop="username" label="用户名">
-                    <v-input v-model.trim="form.username" clearbale></v-input>
+                    <v-input v-model.trim="form.username" clearable class="w-10"></v-input>
                 </v-form-item>
                 <v-form-item prop="cname" label="中文名">
-                    <v-input v-model.trim="form.cname" clearbale></v-input>
+                    <v-input v-model.trim="form.cname" clearable class="w-10"></v-input>
                 </v-form-item>
                 <v-form-item prop="deptId" label="归属部门">
-                    <v-select v-model="form.deptId" clearable>
-                        <v-option label="无" :value="-1"></v-option>
-                    </v-select>
+                  <v-select clearable searchable v-model="form.deptId" class="w-10">
+                    <v-option label="无" :value="-1"></v-option>
+                    <v-option :label="dept.name" :value="dept.id" v-for="dept in depts" :key="dept.id"></v-option>
+                </v-select>
                 </v-form-item>
                 <v-form-item prop="status" label="状态">
-                    <v-select v-model="form.status" clearable>
+                    <v-select v-model="form.status" clearable class="w-8">
                         <v-option label="有效" :value="true"></v-option>
                         <v-option label="无效" :value="false"></v-option>
                     </v-select>
                 </v-form-item>
 
                 <v-form-item >
-                   <v-button type="primary" @click="onSearch">查询</v-button>
-                   <v-button class="ml-3">重置</v-button>
+                   <v-button type="primary" @click="onQuery">查询</v-button>
+                   <v-button class="ml-3" @click="onReset">重置</v-button>
                 </v-form-item>
             </v-form>
         </div>
 
         <div>
-            <v-table :data-source="dataSource">
-                  <v-table-column prop="username" label="用户名"></v-table-column>
-                  <v-table-column prop="cname" label="姓名"></v-table-column>
-                  <v-table-column prop="deptName" label="所属部门"></v-table-column>
-                  <v-table-column prop="ip" label="ip"></v-table-column>
-                  <v-table-column prop="status" label="状态">
-                    <template slot-scope="{row}">{{row.status | transcode('status')}}</template>
-                  </v-table-column>
-                  <v-table-column prop="opt" label="操作" fixed="right" width="120px">
-                      <template slot-scope="{row}">
-                          <span class="icon-btn" @click="onEdit(row)"><v-icon type="edit"></v-icon></span>
-                          <span class="ml-3 icon-btn" @click="onDelete(row.id)"><v-icon type="delete"></v-icon></span>
-                          <span class="ml-3 icon-btn" @click="onViewAuthority(row.id)" title="查看权限"><v-icon type="eye-o"></v-icon></span>
-                      </template>
-                  </v-table-column>
-              </v-table>
+          <div class="mb-2 text-right">
+            <v-button type="text" size="sm" color="primary" @click="onAdd">新增用户</v-button>
+          </div>
+          <v-table pageable :data-source="dataSource" height="calc(100vh - 330px)">
+                <v-table-column prop="username" label="用户名"></v-table-column>
+                <v-table-column prop="cname" label="姓名"></v-table-column>
+                <v-table-column prop="deptName" label="所属部门"></v-table-column>
+                <v-table-column prop="ip" label="ip"></v-table-column>
+                <v-table-column prop="status" label="状态">
+                  <template slot-scope="{row}">{{row.status | transcode('status')}}</template>
+                </v-table-column>
+                <v-table-column prop="opt" label="操作" fixed="right" width="120px">
+                    <template slot-scope="{row}">
+                        <span class="icon-btn" @click="onEdit(row)"><v-icon type="edit"></v-icon></span>
+                        <span class="ml-3 icon-btn" @click="onDelete(row.id)"><v-icon type="delete"></v-icon></span>
+                        <span class="ml-3 icon-btn" @click="onViewAuthority(row.id)" title="查看权限"><v-icon type="eye-o"></v-icon></span>
+                    </template>
+                </v-table-column>
+            </v-table>
         </div>
         <user-authority :visible.sync="authorityVisible" v-bind="authorityProps"></user-authority>
+        <edit-user ref="editUser"></edit-user>
     </div>
 </template>
 
 <script lang="ts">
 
 import { Vue, Component } from 'vue-property-decorator'
-import { queryUsers } from '@/api/user'
+import { queryUsers, deleteUser } from '@/api/user'
+import { queryDepts } from '@/api/dept'
 import UserAuthority from './authority/index.vue'
+import EditUser from './edit-user/index.vue'
 
 @Component({
-  components: { UserAuthority }
+  components: { UserAuthority, EditUser }
 })
 export default class User extends Vue {
     form = {
@@ -76,20 +83,38 @@ export default class User extends Vue {
 
     authorityVisible: boolean = false
 
-    onSearch () {
+    depts: any[] = []
+
+    onQuery () {
       this.query()
     }
 
-    onAdd () {
+    onReset () {
+      const $form = this.$refs.form as any
+      $form.resetFields()
+    }
 
+    onAdd () {
+      const $e = this.$refs.editUser as EditUser
+      $e.add().then(() => {
+        this.$message.success('添加用户成功')
+        this.query()
+      })
     }
 
     onEdit (row: any) {
-
+      const $e = this.$refs.editUser as EditUser
+      $e.edit(row).then(() => {
+        this.$message.success('编辑用户成功')
+        this.query()
+      })
     }
 
     onDelete (id: any) {
-
+      deleteUser(id).then(() => {
+        this.$message.success('删除用户成功')
+        this.query()
+      })
     }
 
     onViewAuthority (id: any) {
@@ -106,8 +131,15 @@ export default class User extends Vue {
       })
     }
 
+    loadDepts () {
+      queryDepts({}).then(data => {
+        this.depts = data || []
+      })
+    }
+
     mounted () {
       this.query()
+      this.loadDepts()
     }
 }
 </script>

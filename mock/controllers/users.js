@@ -1,6 +1,8 @@
 import { Controller, RequestMapping } from '@pat-fet/mock-server'
 import { normalize } from '../helpers/request'
 
+let index = 10000
+
 export default class users extends Controller {
   @RequestMapping({ url: '/login', method: 'post' })
   login (req, res, context) {
@@ -26,7 +28,7 @@ export default class users extends Controller {
   @RequestMapping({ url: '/users', method: 'get' })
   query (req, res, context) {
     let model = normalize(req.query)
-    console.log(model, '000000000')
+    if (model.deptId) model.deptId = +model.deptId
     return this.collection.find(model)
   }
 
@@ -34,7 +36,8 @@ export default class users extends Controller {
   add (req, res, context) {
     let model = normalize(req.body)
     let id = index++
-    if (model.deptId) {
+    let deptId = +model.deptId
+    if (deptId) {
       let dept = this.getCollection('depts').find({ id: deptId })[0]
       if (!dept) throw new Error(`not find dept [${deptId}]`)
       model.deptName = dept.name
@@ -56,14 +59,16 @@ export default class users extends Controller {
     let model = normalize(req.body, false)
     let user = this.collection.find({ id })[0]
     if (!user) throw new Error(`not found user [${id}]`)
-    if (model.deptId) {
-      if (model.deptId < 0) {
+    let deptId = +model.deptId
+    if (deptId) {
+      if (deptId < 0) {
         model.deptId = null
         model.deptName = null
       } else {
         let dept = this.getCollection('depts').find({ id: deptId })[0]
         if (!dept) throw new Error(`not find dept [${deptId}]`)
         model.deptName = dept.name
+        model.deptId = deptId
       }
     }
     Object.assign(user, model)

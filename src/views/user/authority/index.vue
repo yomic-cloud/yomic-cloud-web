@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-drawer :visible.sync="actualVisible" title="用户文件权限列表" width="720px">
-            <authority-list :principle-id="principleId" is-user></authority-list>
+            <authority-list :principle-id="principleId" is-user v-if="actualVisible"></authority-list>
         </v-drawer>
     </div>
 </template>

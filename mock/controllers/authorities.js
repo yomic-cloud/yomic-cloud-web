@@ -1,27 +1,24 @@
 import { Controller, RequestMapping } from '@pat-fet/mock-server'
 import Mock from 'mockjs'
+import { normalize } from '../helpers/request'
 
 let index = 10000
 
 export default class authorities extends Controller {
   @RequestMapping({ url: '/authorities', method: 'get' })
   query (req, res, context) {
-    let isUser = !!req.query.isUser
-    let principleId = (+req.query.principleId) || undefined
-    let fileId = (+req.query.fileId) || undefined
-    let model = { isUser }
-    if (principleId) model.principleId = principleId
-    if (fileId) model.fileId = fileId
+    let model = normalize(req.query)
+    if (model.principleId) model.principleId = +model.principleId
+    if (model.fileId) model.fileId = +model.fileId
     return this.collection.find(model)
   }
 
   @RequestMapping({ url: '/authorities', method: 'post' })
   add (req, res, context) {
-    let isUser = !!req.query.isUser
+    let model = normalize(req.body)
     let id = index++
-    let model = req.body
     let mockExt = Mock.mock({ fileName: '@cword(2, 8)', principleName: '@cname', isDir: '@boolean' })
-    Object.assign(model, { isUser, id }, mockExt)
+    Object.assign(model, { id }, mockExt)
     return this.collection.insert(model)
   }
 
@@ -35,8 +32,8 @@ export default class authorities extends Controller {
   @RequestMapping({ url: '/authorities/:id', method: 'patch' })
   patch (req, res, context) {
     let id = +req.params.id
-    let isUser = !!req.query.isUser
-    let model = req.body || {}
+    let model = normalize(req.body)
+    let isUser = model.isUser
     let authority = this.collection.find({ id, isUser })[0]
     if (!authority) throw new Error(`not found authority [${id}]`)
     Object.assign(authority, model)
