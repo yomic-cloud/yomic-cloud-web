@@ -3,7 +3,7 @@ import Mock from 'mockjs'
 function template (children, id = 1) {
   let data = {
     'id|+1': id,
-    'dir|1-3': true,
+    'dir|2-10': false,
     name: '@cword(2,16)',
     contentType: '@word(2,4)',
     'size|1000-100000': 1,
@@ -12,10 +12,10 @@ function template (children, id = 1) {
     creationTime: '@datetime(yyyy/MM/dd HH:mm:ss)',
     lastChangeBy: '@name',
     lastChangeTime: '@datetime(yyyy/MM/dd HH:mm:ss)',
-    'status|8-9': true,
+    'status|1-10': false,
     'limitSize|1000-100000': 1,
     limitSuffix: '@word(2,4)',
-    'personal|1-10': true
+    'personal|4-10': true
   }
 
   if (children) {
@@ -25,7 +25,7 @@ function template (children, id = 1) {
   return [data]
 }
 const data = Mock.mock({
-  'list|5-20': template(template(template(template(null, 1000000), 100000), 10000))
+  'list|10-20': template(template(template(template(null, 1000000), 100000), 10000))
 }).list
 
 function toArray (tree, parent) {

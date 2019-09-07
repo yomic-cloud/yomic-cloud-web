@@ -108,6 +108,8 @@ export interface FileRes {
   personal?: boolean
 
   records: any[]
+
+  parent?: FileRes
 }
 
 export function queryFiles (req: FileQueryReq) {

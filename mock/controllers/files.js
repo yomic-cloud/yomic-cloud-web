@@ -1,14 +1,13 @@
 import { Controller, RequestMapping } from '@pat-fet/mock-server'
+import { normalize } from '../helpers/request'
 
 let index = 100000000
 
 export default class files extends Controller {
   @RequestMapping({ url: '/files', method: 'get' })
   query (req, res, context) {
-    let model = req.query
-    delete model._t
-    let parentId = model.parentId
-    if (parentId) model.parentId = parentId > 0 ? +parentId : null
+    let model = normalize(req.query)
+    if (model.parentId) model.parentId = +model.parentId
     return this.collection.find(model)
   }
 
@@ -24,7 +23,14 @@ export default class files extends Controller {
   @RequestMapping({ url: '/files/:id', method: 'get' })
   get (req, res, context) {
     let id = +req.params.id
-    return this.collection.find({ id })[0]
+    let file = this.collection.find({ id })[0]
+    let temp = file
+    while (temp) {
+      let parent = this.collection.find({ id: temp.parentId })[0]
+      temp.parent = parent
+      temp = parent
+    }
+    return file
   }
 
   @RequestMapping({ url: '/files/:id', method: 'patch' })
