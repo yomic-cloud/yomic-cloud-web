@@ -2,7 +2,7 @@
     <div>
         <v-table :data-source="dataSource"  :class="[$style.table]"
             @selection-change="onSelectionChange" ref="table">
-            <v-table-column type="selection" width="80px"></v-table-column>
+            <v-table-column type="selection" fixed="left" width="80px"></v-table-column>
             <v-table-column prop="name" label="文件名" width="480px">
                 <template slot-scope="{row}">
                     <file-icon v-bind="iconProps(row)"></file-icon>
