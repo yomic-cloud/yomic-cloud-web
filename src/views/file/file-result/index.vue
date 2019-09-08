@@ -2,8 +2,8 @@
     <div>
         <div :class="[$style.toolbar]" class="m-2">
             <span class="d-flex">
-                <v-button color="primary" class="mr-2" icon="upload">上传</v-button>
-                <v-button color="primary" class="mr-2">新建文件夹</v-button>
+                <v-button color="primary" class="mr-2" icon="upload" @click="onUpload">上传</v-button>
+                <v-button color="primary" class="mr-2" @click="onNew">新建文件夹</v-button>
 
                 <v-button-group class="mr-2">
                     <v-button color="primary">分享</v-button>
@@ -35,6 +35,9 @@
             <file-list :data-source="dataSource" :checked-rows.sync="checkedRows" v-if="view === 'list'"></file-list>
             <file-thumbnail :data-source="dataSource" :checked-rows.sync="checkedRows" v-else></file-thumbnail>
         </div>
+
+        <edit-dir ref="editDir"></edit-dir>
+        <file-upload ref="fileUpload"></file-upload>
     </div>
 </template>
 
@@ -45,9 +48,11 @@ import { queryFiles } from '@/api/file'
 import FileList from './file-list/index.vue'
 import FileThumbnail from './file-thumbnail/index.vue'
 import FileNavigator from './file-navigator/index.vue'
+import EditDir from './edit-dir/index.vue'
+import FileUpload from './file-upload/index.vue'
 
 @Component({
-  components: { FileList, FileThumbnail, FileNavigator }
+  components: { FileList, FileThumbnail, FileNavigator, EditDir, FileUpload }
 })
 export default class FileResult extends Vue {
     @Prop(Number) parentId!: number
@@ -75,11 +80,19 @@ export default class FileResult extends Vue {
     }
 
     onUpload () {
-
+      const $e = this.$refs.fileUpload as FileUpload
+      $e.upload(this.parentId).then(() => {
+        this.$message.success('上传成功')
+        this.refresh()
+      })
     }
 
     onNew () {
-
+      const $e = this.$refs.editDir as EditDir
+      $e.add(this.parentId).then(() => {
+        this.$message.success('新建文件夹成功')
+        this.refresh()
+      })
     }
 
     onShare (file?: any) {
@@ -106,6 +119,11 @@ export default class FileResult extends Vue {
 
     }
 
+    refresh () {
+      this.loadData()
+      this.onClearSelection()
+    }
+
     loadData () {
       if (!this.parentId) {
         this.dataSource = []
@@ -128,8 +146,7 @@ export default class FileResult extends Vue {
     }
 
     @Watch('parentId', { immediate: true }) parentIdChange (parentId: number) {
-      this.loadData()
-      this.onClearSelection()
+      this.refresh()
     }
 }
 </script>

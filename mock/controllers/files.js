@@ -15,7 +15,14 @@ export default class files extends Controller {
   add (req, res, context) {
     let model = req.body || {}
     let id = index++
-    Object.assign(model, { id })
+    let status = true
+    Object.assign(model, { id, status })
+    let parentId = model.parentId
+    if (parentId) {
+      let parent = this.collection.find({ id: parentId })[0]
+      if (!parent) throw new Error(`not found parentId [${parentId}]`)
+      model.personal = parent.personal
+    }
     this.collection.insert(model)
     return id
   }
