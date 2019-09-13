@@ -2,7 +2,7 @@
     <div>
       <v-modal :visible.sync="actualVisible" width="40vw" title="上载文件">
         <div :class="[$style.body]">
-          <v-upload>
+          <v-upload :custom-request="customRequest" :before-upload="beforeUpload" :success-fn="successFn" :remove-fn="removeFn" v-if="visible">
             <div class="border rounded border-dashed w-16 h-12 text-center p-4">
               <div class="text-primary ft-64"><v-icon type="upload"></v-icon></div>
               <div class="display-5">点击或拖动文件到此处</div>
@@ -21,13 +21,18 @@
 <script lang="ts">
 
 import { Vue, Component } from 'vue-property-decorator'
-import { addDept, patchDept, queryDepts } from '@/api/dept'
+import request from './request'
+import { remove } from '@/api/nas'
+import { addFile } from '@/api/file'
+import { UploadFile } from 'vua'
 
 @Component
 export default class FileUpload extends Vue {
   parentId: number | null = null
 
   form = {
+    uuid: '',
+    name: ''
   }
 
   resolve: Function | null = null
@@ -35,6 +40,8 @@ export default class FileUpload extends Vue {
   reject: Function | null = null
 
   visible: boolean = false
+
+  customRequest = request
 
   get actualVisible () {
     return this.visible
@@ -44,6 +51,25 @@ export default class FileUpload extends Vue {
     this.onCancel()
   }
 
+  beforeUpload (file: UploadFile, fileList: UploadFile[]): boolean {
+    if (fileList.length < 2) {
+      this.form.uuid = ''
+      this.form.name = file.name
+      return true
+    }
+    this.$message.info('请先移除存在文件')
+    fileList.pop()
+    return false
+  }
+
+  successFn (data: any) {
+    this.form.uuid = data
+  }
+
+  removeFn () {
+    return this.removeFile()
+  }
+
   upload (parentId: number | null) {
     this.parentId = parentId
     return this.init()
@@ -51,6 +77,8 @@ export default class FileUpload extends Vue {
 
   init (): Promise<any> {
     this.form = {
+      uuid: '',
+      name: ''
     }
     this.visible = true
     return new Promise((resolve, reject) => {
@@ -60,24 +88,42 @@ export default class FileUpload extends Vue {
   }
 
   onCancel () {
+    this.removeFile()
     this.visible = false
     if (this.reject) this.reject()
   }
 
   onConfirm () {
-    this.request().then(data => {
+    if (!this.form.uuid) {
+      this.$message.info('请先上传文件')
+      return
+    }
+    this.request(this.generateReq()).then(data => {
       this.visible = false
       if (this.resolve) this.resolve(data)
     })
   }
 
-  request (): Promise<number | void> {
-    return Promise.resolve()
+  request (req: any): Promise<number | void> {
+    return addFile(req)
   }
 
   generateReq () {
-    let req: any = {}
+    let req: any = {
+      dir: false,
+      uuid: this.form.uuid,
+      name: this.form.name
+    }
+    if (this.parentId && this.parentId < 0) req.personal = this.parentId === -3
+    req.parentId = (this.parentId && this.parentId < 0) ? null : this.parentId
     return req
+  }
+
+  removeFile (): Promise<any> {
+    if (this.form.uuid) {
+      return remove(this.form.uuid)
+    }
+    return Promise.resolve()
   }
 }
 </script>

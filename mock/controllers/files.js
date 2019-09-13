@@ -1,5 +1,6 @@
 import { Controller, RequestMapping } from '@pat-fet/mock-server'
 import { normalize } from '../helpers/request'
+import path from 'path'
 
 let index = 100000000
 
@@ -57,5 +58,20 @@ export default class files extends Controller {
     let dept = this.collection.find({ id })[0]
     console.log(dept, id)
     this.collection.remove(dept)
+  }
+
+  @RequestMapping({ url: '/files/:id/download', method: 'get' })
+  download (req, res, context) {
+    let id = +req.params.id
+    let file = this.collection.find({ id })[0]
+    if (!file) throw new Error('file not exists')
+    let uuid = file.uuid
+    let p = path.join(__dirname, '../nas', uuid)
+    let name = file.name
+    return new Promise((resolve, reject) => {
+      res.download(p, name, function (err) {
+        if (err) throw err
+      })
+    })
   }
 }

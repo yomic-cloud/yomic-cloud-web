@@ -131,3 +131,7 @@ export function getFile (id: number) {
 export function deleteFile (id: number) {
   return http().delete<void>(`/files/${id}`)
 }
+
+export function downloadFile (id: number) {
+  return http().get<Blob>(`/files/${id}/download`, { responseType: 'blob' })
+}

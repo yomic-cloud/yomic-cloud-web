@@ -44,7 +44,8 @@
 <script lang="ts">
 
 import { Vue, Component, Prop, Watch, Provide } from 'vue-property-decorator'
-import { queryFiles } from '@/api/file'
+import { queryFiles, downloadFile } from '@/api/file'
+import { download } from '@/helpers/download'
 import FileList from './file-list/index.vue'
 import FileThumbnail from './file-thumbnail/index.vue'
 import FileNavigator from './file-navigator/index.vue'
@@ -99,8 +100,14 @@ export default class FileResult extends Vue {
 
     }
 
-    onDownload (file?: any) {
-
+    @Provide() onDownload (file?: any) {
+      if (file.dir) {
+        this.$message.info('暂不支持下载文件夹')
+        return
+      }
+      downloadFile(file.id).then(data => {
+        download(data, file.name)
+      })
     }
 
     onDelete (file?: any) {

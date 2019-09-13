@@ -13,9 +13,9 @@
             <v-table-column prop="lastChangeTime" label="修改日期"></v-table-column>
             <v-table-column prop="umask" label="权限"></v-table-column>
             <v-table-column column-key="opt" label="操作" fixed="right" width="120px">
-                <template slot-scope="{}">
+                <template slot-scope="{row}">
                     <span class="mr-2 icon-btn"><v-icon type="share-alt"></v-icon></span>
-                    <span class="mr-2 icon-btn"><v-icon type="cloud-download-o"></v-icon></span>
+                    <span class="mr-2 icon-btn" @click="onDownload(row)"><v-icon type="cloud-download-o"></v-icon></span>
                     <v-dropdown trigger="click" class="d-inline">
                         <span class="icon-btn"><v-icon type="ellipsis"></v-icon></span>
                         <v-dropdown-menu slot="dropdown" class="w-6">
@@ -44,6 +44,8 @@ export default class FileList extends Vue {
     @Emit('update:checked-rows') updateCheckedRows (files: any) {}
 
     @Inject() onPreview!: (row: any) => void
+
+    @Inject() onDownload!: (row: any) => void
 
     onSelectionChange (rows: any[]) {
       this.updateCheckedRows(rows)
