@@ -117,10 +117,12 @@ export default class FileResult extends Vue {
 
     @Provide() onDelete (file?: any) {
       if (!this.validate(file)) return
-      let ids: number[] = file ? [file.id] : this.checkedRows.map((v: any) => v.id)
-      let all = ids.map(v => addRecycle({ fileId: v }))
-      Promise.all(all).then(v => {
-        this.refresh()
+      this.$modal.confirm({ title: '确认', content: '确认删除文件？' }).then(() => {
+        let ids: number[] = file ? [file.id] : this.checkedRows.map((v: any) => v.id)
+        let all = ids.map(v => addRecycle({ fileId: v }))
+        Promise.all(all).then(v => {
+          this.refresh()
+        })
       })
     }
 

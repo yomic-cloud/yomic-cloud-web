@@ -1,7 +1,7 @@
 <template>
     <div>
         <div :class="[$style.header]" class="text-right m-2">
-            <v-button color="primary" icon="delete">清空回收站</v-button>
+            <v-button color="primary" type="text" icon="delete" @click="onClear">清空回收站</v-button>
         </div>
 
         <div class="d-flex justify-content-between align-content-center m-2">
@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <v-table pageable row-key="id" :data-source="dataSource" @selection-change="onSelectionChange" height="calc(100vh - 320px)">
+        <v-table pageable row-key="id" :data-source="dataSource" @selection-change="onSelectionChange" height="calc(100vh - 300px)">
             <v-table-column type="selection" fixed="left" width="80px"></v-table-column>
             <v-table-column prop="name" label="文件名"></v-table-column>
             <v-table-column prop="size" label="大小"></v-table-column>
@@ -46,19 +46,23 @@ export default class Recycle extends Vue {
 
     onDelete (id?: number) {
       if (!this.validate(id)) return
-      let ids: number[] = id ? [id] : this.checkedRows
-      let all = ids.map(v => deleteRecycle(v))
-      Promise.all(all).then(v => {
-        this.refresh()
+      this.$modal.confirm({ title: '确认', content: '确认删除文件，删除后将不能恢复？' }).then(() => {
+        let ids: number[] = id ? [id] : this.checkedRows
+        let all = ids.map(v => deleteRecycle(v))
+        Promise.all(all).then(v => {
+          this.refresh()
+        })
       })
     }
 
     onRecover (id?: number) {
       if (!this.validate(id)) return
-      let ids: number[] = id ? [id] : this.checkedRows
-      let all = ids.map(v => deleteRecycle(v, true))
-      Promise.all(all).then(v => {
-        this.refresh()
+      this.$modal.confirm({ title: '确认', content: '确认恢复文件？' }).then(() => {
+        let ids: number[] = id ? [id] : this.checkedRows
+        let all = ids.map(v => deleteRecycle(v, true))
+        Promise.all(all).then(v => {
+          this.refresh()
+        })
       })
     }
 
@@ -68,6 +72,10 @@ export default class Recycle extends Vue {
 
     onClearSelection () {
       this.checkedRows = []
+    }
+
+    onClear () {
+      this.$message.warning('暂未实现')
     }
 
     refresh () {
