@@ -37,6 +37,9 @@ export default class nas extends Controller {
   remove (req, res, context) {
     let uuid = req.params.uuid
     let file = this.collection.find({ uuid })[0]
+    if (!file) throw new Error(`not found [${uuid}]`)
+    let p = path.join(__dirname, '../nas', uuid)
+    fs.unlinkSync(p)
     this.collection.remove(file)
   }
 }

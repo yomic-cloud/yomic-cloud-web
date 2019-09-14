@@ -22,7 +22,7 @@
                             <v-dropdown-item>移动到</v-dropdown-item>
                             <v-dropdown-item>复制到</v-dropdown-item>
                             <v-dropdown-item>重命名</v-dropdown-item>
-                            <v-dropdown-item>删除</v-dropdown-item>
+                            <v-dropdown-item @click="onDelete(row)">删除</v-dropdown-item>
                         </v-dropdown-menu>
                     </v-dropdown>
                 </template>
@@ -46,6 +46,8 @@ export default class FileList extends Vue {
     @Inject() onPreview!: (row: any) => void
 
     @Inject() onDownload!: (row: any) => void
+
+    @Inject() onDelete!: (row: any) => void
 
     onSelectionChange (rows: any[]) {
       this.updateCheckedRows(rows)

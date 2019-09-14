@@ -8,7 +8,7 @@
                 <v-button-group class="mr-2">
                     <v-button color="primary">分享</v-button>
                     <v-button color="primary">下载</v-button>
-                    <v-button color="primary">删除</v-button>
+                    <v-button color="primary" @click="onDelete()">删除</v-button>
                     <v-button color="primary">重命名</v-button>
                     <v-button color="primary" disabled>复制到</v-button>
                     <v-button color="primary" disabled>移动到</v-button>
@@ -45,6 +45,7 @@
 
 import { Vue, Component, Prop, Watch, Provide } from 'vue-property-decorator'
 import { queryFiles, downloadFile } from '@/api/file'
+import { addRecycle } from '@/api/recycle'
 import { download } from '@/helpers/download'
 import FileList from './file-list/index.vue'
 import FileThumbnail from './file-thumbnail/index.vue'
@@ -101,6 +102,10 @@ export default class FileResult extends Vue {
     }
 
     @Provide() onDownload (file?: any) {
+      if (!file) {
+        this.$message.info('暂不支持批量下载')
+        return
+      }
       if (file.dir) {
         this.$message.info('暂不支持下载文件夹')
         return
@@ -110,8 +115,13 @@ export default class FileResult extends Vue {
       })
     }
 
-    onDelete (file?: any) {
-
+    @Provide() onDelete (file?: any) {
+      if (!this.validate(file)) return
+      let ids: number[] = file ? [file.id] : this.checkedRows.map((v: any) => v.id)
+      let all = ids.map(v => addRecycle({ fileId: v }))
+      Promise.all(all).then(v => {
+        this.refresh()
+      })
     }
 
     onRename (file?: any) {
@@ -150,6 +160,14 @@ export default class FileResult extends Vue {
       }).finally(() => {
         this.loading = false
       })
+    }
+
+    validate (file?: any) {
+      if (!file && this.checkedRows.length < 1) {
+        this.$message.info('请选择文件')
+        return false
+      }
+      return true
     }
 
     @Watch('parentId', { immediate: true }) parentIdChange (parentId: number) {

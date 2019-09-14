@@ -7,7 +7,11 @@ export default function request (param: UploadRequestParam) {
   formData.append('file', param.file)
   const source = axios.CancelToken.source()
   const config: AxiosRequestConfig = {
-    onUploadProgress: param.onProgress || (() => {}),
+    // onUploadProgress: param.onProgress || (() => {}),
+    onUploadProgress: (e) => {
+      let percent = Math.floor(e.loaded / e.total * 100)
+      if (param.onProgress) param.onProgress({ percent })
+    },
     cancelToken: source.token
   }
   upload(formData, config).then(data => {

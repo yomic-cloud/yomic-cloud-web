@@ -1,7 +1,7 @@
 <template>
     <div :class="[$style.container]">
         <file-tree :id.sync="id" :class="[$style.tree]"></file-tree>
-        <file-result :parent-id="id" :class="[$style.result]"></file-result>
+        <file-result :parent-id="id" :class="[$style.result]" v-if="id"></file-result>
     </div>
 </template>
 

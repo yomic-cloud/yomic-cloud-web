@@ -9,7 +9,8 @@ import SvgPlugin from './svg'
 export default function install (): void {
   Vue.use(vua, {
     lang: {
-      locales: { 'zh-Hans': zhHans }
+      locales: { 'zh-Hans': zhHans },
+      current: 'zh-Hans'
     }
   })
 
