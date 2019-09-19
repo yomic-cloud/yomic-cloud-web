@@ -6,7 +6,7 @@ const whiteList = ['/login', '/error/**'] // ant style wildcat
 
 const frontGuard: NavigationGuard = function (to, from, next) {
   NP.start()
-  if (onWhiteList(to.path)) {
+  if (onWhiteList(to.path) || (!to.meta || !to.meta.pid)) {
     next()
     return
   }

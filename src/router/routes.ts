@@ -54,6 +54,11 @@ const routes: Array<RouteConfig> = [
       }
     ]
   },
+  {
+    path: '/links/:code',
+    name: 'links',
+    component: () => import('@/views/link/index.vue')
+  },
   // DON'T CHANGE BELOW
   {
     path: '/login',
