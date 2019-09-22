@@ -1,7 +1,9 @@
 import { http } from '.'
+import { FileQueryReq, FileRes } from './file'
 
 export interface LinkQueryReq {
     creationBy?: string
+    code?: string
 }
 
 export interface LinkQueryRes {
@@ -56,4 +58,15 @@ export function getLink (id: number) {
 
 export function deleteLink (id: number) {
   return http().delete<void>(`/links/${id}`)
+}
+
+// file related
+
+export function queryFilesByLink (linkId: number, parentId?: number) {
+  let params = { parentId: parentId }
+  return http().get<FileQueryReq[]>(`/links/${linkId}/files`, { params })
+}
+
+export function getFileByLink (linkId: number, fileId: number) {
+  return http().get<FileRes>(`/links/${linkId}/files/${fileId}`)
 }

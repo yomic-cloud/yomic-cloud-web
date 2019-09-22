@@ -59,4 +59,36 @@ export default class links extends Controller {
     let link = this.collection.find({ id })[0]
     this.collection.remove(link)
   }
+
+  @RequestMapping({ url: '/links/:id/files', method: 'get' })
+  queryFilesByLink (req, res, context) {
+    let model = normalize(req.query)
+    let id = +req.params.id
+    let parentId = +model.parentId
+    let link = this.collection.find({ id })[0]
+    if (!link) throw new Error(`not found link [${id}]`)
+    let ret = []
+    if (!parentId) {
+      (link.files || []).forEach(v => {
+        ret.push(...this.getCollection('files').find({ id: v }))
+      })
+    } else {
+      ret.push(...this.getCollection('files').find({ parentId }))
+    }
+    return ret
+  }
+
+  @RequestMapping({ url: '/links/:id/files/:fileId', method: 'get' })
+  getFileByLink (req, res, context) {
+    let id = +req.params.id
+    let fileId = +req.params.fileId
+    let file = this.getCollection('files').find({ id: fileId })[0]
+    let temp = file
+    while (temp) {
+      let parent = this.getCollection('files').find({ id: temp.parentId })[0]
+      temp.parent = parent
+      temp = parent
+    }
+    return file
+  }
 }

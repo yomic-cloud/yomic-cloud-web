@@ -20,6 +20,15 @@
                 <span class="ml-2 text-link">{{resolveName(row)}}</span>
               </template>
             </v-table-column>
+            <v-table-column prop="code" label="链接">
+              <template slot-scope="{row}">
+                <span>
+                  <a @click="onLink(row)">{{resolveLink(row)}}</a>
+                  <v-button type="outline" size="sm" class="ml-2" @click="onCopy(row)">复制</v-button>
+                </span>
+              </template>
+            </v-table-column>
+            <v-table-column prop="password" label="提取码"></v-table-column>
             <v-table-column prop="creationTime" label="分享时间"></v-table-column>
             <v-table-column prop="creationBy" label="分享人"></v-table-column>
             <v-table-column prop="expiryTime" label="失效时间"></v-table-column>
@@ -36,6 +45,7 @@
 
 import { Vue, Component } from 'vue-property-decorator'
 import { queryLinks } from '@/api/link'
+import { copy } from '@/helpers/copy'
 
 @Component
 export default class Share extends Vue {
@@ -69,6 +79,20 @@ export default class Share extends Vue {
 
     resolveName (row: any) {
       return (row.files && row.files[0] && row.files[0].name) + '...'
+    }
+
+    resolveLink (row: any) {
+      return window.location.origin + `/#/links/${row.code}`
+    }
+
+    onLink (row: any) {
+      this.$router.push(`/links/${row.code}`)
+    }
+
+    onCopy (row: any) {
+      let url = this.resolveLink(row)
+      copy(url)
+      this.$message.success('已复制到剪切板')
     }
 
     loadData () {
