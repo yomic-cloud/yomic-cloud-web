@@ -62,11 +62,19 @@ export function deleteLink (id: number) {
 
 // file related
 
+export function getLinkByCode (code: string) {
+  return http().get<LinkRes>(`/share/links/${code}`)
+}
+
 export function queryFilesByLink (linkId: number, parentId?: number) {
   let params = { parentId: parentId }
-  return http().get<FileQueryReq[]>(`/links/${linkId}/files`, { params })
+  return http().get<FileQueryReq[]>(`/share/links/${linkId}/files`, { params })
 }
 
 export function getFileByLink (linkId: number, fileId: number) {
-  return http().get<FileRes>(`/links/${linkId}/files/${fileId}`)
+  return http().get<FileRes>(`/share/links/${linkId}/files/${fileId}`)
+}
+
+export function downloadFileByLink (linkId: number, fileId: number) {
+  return http().get<Blob>(`/share/links/${linkId}/files/${fileId}/download`, { responseType: 'blob' })
 }

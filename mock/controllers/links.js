@@ -60,7 +60,21 @@ export default class links extends Controller {
     this.collection.remove(link)
   }
 
-  @RequestMapping({ url: '/links/:id/files', method: 'get' })
+  // no auth
+
+  @RequestMapping({ url: '/share/links/:code', method: 'get' })
+  getLinkByCode (req, res, context) {
+    let code = req.params.code
+    let ret = this.collection.find({ code })[0]
+    if (!ret) return ret
+    ret = Object.assign({}, ret)
+    ret.files = (ret.files || []).map(v => {
+      return this.getCollection('files').find({ id: v })[0]
+    }).filter(v => !!v)
+    return ret
+  }
+
+  @RequestMapping({ url: '/share/links/:id/files', method: 'get' })
   queryFilesByLink (req, res, context) {
     let model = normalize(req.query)
     let id = +req.params.id
@@ -78,7 +92,7 @@ export default class links extends Controller {
     return ret
   }
 
-  @RequestMapping({ url: '/links/:id/files/:fileId', method: 'get' })
+  @RequestMapping({ url: '/share/links/:id/files/:fileId', method: 'get' })
   getFileByLink (req, res, context) {
     let id = +req.params.id
     let fileId = +req.params.fileId
@@ -90,5 +104,21 @@ export default class links extends Controller {
       temp = parent
     }
     return file
+  }
+
+  @RequestMapping({ url: '/share/links/:id/files/:fileId/download', method: 'get' })
+  downloadFileByLink (req, res, context) {
+    let id = +req.params.id
+    let fileId = +req.params.fileId
+    let file = this.getCollection('files').find({ id: fileId })[0]
+    if (!file) throw new Error('file not exists')
+    let uuid = file.uuid
+    let p = path.join(__dirname, '../nas', uuid)
+    let name = file.name
+    return new Promise((resolve, reject) => {
+      res.download(p, name, function (err) {
+        if (err) throw err
+      })
+    })
   }
 }

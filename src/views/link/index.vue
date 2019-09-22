@@ -37,8 +37,7 @@
 <script lang="ts">
 
 import { Vue, Component, Provide, Watch } from 'vue-property-decorator'
-import { queryLinks, queryFilesByLink } from '@/api/link'
-import { queryFiles, downloadFile } from '@/api/file'
+import { getLinkByCode, queryFilesByLink, downloadFileByLink } from '@/api/link'
 import { download } from '@/helpers/download'
 import FileList from './file-list/index.vue'
 import FileNavigator from './file-navigator/index.vue'
@@ -99,7 +98,7 @@ export default class Link extends Vue {
       this.$message.info('暂不支持下载文件夹')
       return
     }
-    downloadFile(file.id).then(data => {
+    downloadFileByLink(this.link.id, file.id).then(data => {
       download(data, file.name)
     })
   }
@@ -109,11 +108,8 @@ export default class Link extends Vue {
       this.link = null
       return
     }
-    let req = {
-      code: this.code as any
-    }
-    queryLinks(req).then(data => {
-      this.link = (data && data[0]) || null
+    getLinkByCode(this.code).then(data => {
+      this.link = data || null
       this.loadData()
     })
   }

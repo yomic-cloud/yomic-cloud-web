@@ -13,7 +13,8 @@ const config = {
   auth: {
     token: {
       enabled: false
-    }
+    },
+    whiteList: ['/login', '/logout', '/share/**']
   }
 }
 
