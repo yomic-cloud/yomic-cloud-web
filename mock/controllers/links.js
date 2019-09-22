@@ -25,7 +25,9 @@ export default class links extends Controller {
     let creationBy = context.authService.getAuth(req).username
     let creationTime = formatDate(new Date())
     let code = genUuid()
-    Object.assign(model, { id, creationBy, creationTime, code })
+    let password = model.encode ? ('t' + Math.random()).substr(0, 4) : null
+    let expiredTime = model.expiredTime || null
+    Object.assign(model, { id, creationBy, creationTime, code, password, expiredTime })
     this.collection.insert(model)
     return id
   }

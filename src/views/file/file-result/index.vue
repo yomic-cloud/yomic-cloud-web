@@ -6,7 +6,7 @@
                 <v-button color="primary" class="mr-2" @click="onNew">新建文件夹</v-button>
 
                 <v-button-group class="mr-2">
-                    <v-button color="primary">分享</v-button>
+                    <v-button color="primary" @click="onShare()">分享</v-button>
                     <v-button color="primary">下载</v-button>
                     <v-button color="primary" @click="onDelete()">删除</v-button>
                     <v-button color="primary">重命名</v-button>
@@ -38,6 +38,7 @@
 
         <edit-dir ref="editDir"></edit-dir>
         <file-upload ref="fileUpload"></file-upload>
+        <file-share ref="fileShare"></file-share>
     </div>
 </template>
 
@@ -52,9 +53,10 @@ import FileThumbnail from './file-thumbnail/index.vue'
 import FileNavigator from './file-navigator/index.vue'
 import EditDir from './edit-dir/index.vue'
 import FileUpload from './file-upload/index.vue'
+import FileShare from './file-share/index.vue'
 
 @Component({
-  components: { FileList, FileThumbnail, FileNavigator, EditDir, FileUpload }
+  components: { FileList, FileThumbnail, FileNavigator, EditDir, FileUpload, FileShare }
 })
 export default class FileResult extends Vue {
     @Prop(Number) parentId!: number
@@ -97,8 +99,16 @@ export default class FileResult extends Vue {
       })
     }
 
-    onShare (file?: any) {
-
+    @Provide() onShare (file?: any) {
+      let files = file ? [file] : this.checkedRows
+      if (files.length < 1) {
+        this.$message.info('请选择分享文件')
+        return
+      }
+      const $e = this.$refs.fileShare as FileShare
+      $e.share(files).then(() => {
+        // do nothing
+      })
     }
 
     @Provide() onDownload (file?: any) {

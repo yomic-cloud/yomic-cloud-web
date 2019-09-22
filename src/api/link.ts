@@ -17,7 +17,6 @@ export interface LinkQueryRes {
 }
 
 export interface LinkAddReq {
-    password?: string
     expiryTime?: string
     files: number[]
 }
