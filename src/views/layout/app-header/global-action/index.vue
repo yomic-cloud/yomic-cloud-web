@@ -8,8 +8,8 @@
             </div>
         </div>
         <v-dropdown-menu slot="dropdown">
-            <v-dropdown-item class="w-8">
-                <v-icon type="user"></v-icon> <span class="ml-3">个人中心</span>
+            <v-dropdown-item class="w-8" @click.native="onLink('/user-setting')">
+                <v-icon type="user"></v-icon> <span class="ml-3">个人设置</span>
             </v-dropdown-item>
             <v-dropdown-item divider></v-dropdown-item>
             <v-dropdown-item @click.native="onLogout">
@@ -28,6 +28,10 @@ import { Vue, Component } from 'vue-property-decorator'
 export default class GlobalAction extends Vue {
   get username () {
     return this.$auth.username
+  }
+
+  onLink (path: string) {
+    this.$router.push(path)
   }
 
   onLogout () {
