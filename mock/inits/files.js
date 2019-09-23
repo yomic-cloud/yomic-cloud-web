@@ -1,5 +1,32 @@
 import Mock from 'mockjs'
 
+// copy from client
+const map = {
+  // image
+  'image/gif': 'gif',
+  'image/x-icon': 'ico',
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'application/x-bmp': 'png',
+  'image/': 'image',
+
+  // office
+  'application/msword': 'word',
+  'application/vnd.ms-excel': 'excel',
+  'application/vnd.ms-powerpoint': 'ppt',
+
+  // pdf
+  'application/pdf': 'pdf'
+
+  // audio
+}
+
+function randomContentType () {
+  let keys = Object.keys(map)
+  let index = Math.floor(Math.random() * keys.length)
+  return keys[index] || '/image/x-000'
+}
+
 function template (children, id = 1) {
   let data = {
     'id|+1': id,
@@ -38,6 +65,7 @@ function toArray (tree, parent) {
     delete v.children
     v.parentId = (parent && parent.id) || null
     if (parent && parent.personal) v.personal = true
+    if (!v.dir) v.contentType = randomContentType()
     ret.push(v)
   })
   return ret

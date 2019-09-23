@@ -19,7 +19,7 @@ export const menus: Array<MenuOption> = [
     name: '全部文件',
     icon: 'folder-open',
     pid: `${HOME}.file`,
-    link: '/file'
+    link: '/file?id=-2'
   },
   {
     name: '我的分享',

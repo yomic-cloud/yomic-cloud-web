@@ -91,7 +91,7 @@ export default class FileTree extends Vue {
 }
 
 .toolbar {
-    background-color: var(--bg-color-2);
+    background-color: var(--primary-lighten-4);
     line-height: 2rem;
     height: 2rem;
 }

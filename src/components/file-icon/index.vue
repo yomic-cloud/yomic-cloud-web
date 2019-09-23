@@ -1,9 +1,10 @@
 <template>
-  <span><svg-icon :icon="icon"></svg-icon></span>
+  <span class="text-primary"><svg-icon :icon="icon"></svg-icon></span>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import { getIcon } from './config'
 
 @Component
 export default class FileIcon extends Vue {
@@ -11,7 +12,7 @@ export default class FileIcon extends Vue {
 
   @Prop(Boolean) personal!: boolean
 
-  @Prop(String) contentType!: boolean
+  @Prop(String) contentType!: string
 
   @Prop(Boolean) root!: boolean
 
@@ -23,7 +24,7 @@ export default class FileIcon extends Vue {
       }
       return 'dir'
     }
-    return 'file'
+    return getIcon(this.contentType)
   }
 }
 </script>
