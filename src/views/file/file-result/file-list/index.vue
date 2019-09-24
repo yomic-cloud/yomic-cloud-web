@@ -50,7 +50,14 @@ export default class FileList extends Vue {
     @Inject() onDelete!: (row: any) => void
 
     onSelectionChange (rows: any[]) {
+      if (isSameArray(rows, this.checkedRows)) return
       this.updateCheckedRows(rows)
+
+      function isSameArray (a: any[], b: any[]) {
+        if (a.length !== b.length) return false
+        let s2 = new Set(b)
+        return a.every(v => s2.has(v))
+      }
     }
 
     iconProps (row: any) {
@@ -61,15 +68,21 @@ export default class FileList extends Vue {
       return { dir, personal, root, contentType }
     }
 
-    initCheckedFiles () {
+    syncCheckRows () {
       const $e = this.$refs.table as any
+      if (!$e) return
+      $e.selectionKeySet.clear()
       this.checkedRows.forEach((v: any) => {
         $e.selectionKeySet.add(v)
       })
     }
 
     mounted () {
-      this.initCheckedFiles()
+      this.syncCheckRows()
+    }
+
+    @Watch('checkedRows') checkedRowsChange () {
+      this.syncCheckRows()
     }
 }
 </script>

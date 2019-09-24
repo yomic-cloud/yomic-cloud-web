@@ -4,7 +4,7 @@
             <li :class="[$style.item, activeCls(row)]" v-for="(row, i) in dataSource" :key="i" @click="onPreview(row)">
                 <div class="text-center"><file-icon v-bind="iconProps(row)" class="ft-64"></file-icon></div>
                 <div class="text-truncate text-center px-3">{{row.name}}</div>
-                <div :class="[$style.checkbox]"><v-icon type="check-circle" @click.stop="onCheck(row)"></v-icon></div>
+                <div :class="[$style.checkbox]" @click.stop="onCheck(row)"><v-icon type="check-circle"></v-icon></div>
             </li>
         </ul>
     </div>
