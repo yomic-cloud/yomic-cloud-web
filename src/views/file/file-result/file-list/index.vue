@@ -21,7 +21,7 @@
                         <v-dropdown-menu slot="dropdown" class="w-6">
                             <v-dropdown-item>移动到</v-dropdown-item>
                             <v-dropdown-item>复制到</v-dropdown-item>
-                            <v-dropdown-item>重命名</v-dropdown-item>
+                            <v-dropdown-item @click="onRename(row)">重命名</v-dropdown-item>
                             <v-dropdown-item @click="onDelete(row)">删除</v-dropdown-item>
                         </v-dropdown-menu>
                     </v-dropdown>
@@ -48,6 +48,8 @@ export default class FileList extends Vue {
     @Inject() onDownload!: (row: any) => void
 
     @Inject() onDelete!: (row: any) => void
+
+    @Inject() onRename!: (row: any) => void
 
     onSelectionChange (rows: any[]) {
       if (isSameArray(rows, this.checkedRows)) return

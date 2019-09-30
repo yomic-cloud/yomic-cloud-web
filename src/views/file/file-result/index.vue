@@ -7,9 +7,9 @@
 
                 <v-button-group class="mr-2">
                     <v-button color="primary" @click="onShare()">分享</v-button>
-                    <v-button color="primary">下载</v-button>
+                    <v-button color="primary" @click="onDownload()">下载</v-button>
                     <v-button color="primary" @click="onDelete()">删除</v-button>
-                    <v-button color="primary">重命名</v-button>
+                    <v-button color="primary" @click="onRename()">重命名</v-button>
                     <v-button color="primary" disabled>复制到</v-button>
                     <v-button color="primary" disabled>移动到</v-button>
                 </v-button-group>
@@ -39,6 +39,7 @@
         <edit-dir ref="editDir"></edit-dir>
         <file-upload ref="fileUpload"></file-upload>
         <file-share ref="fileShare"></file-share>
+        <file-rename ref="fileRename"></file-rename>
     </div>
 </template>
 
@@ -54,9 +55,10 @@ import FileNavigator from './file-navigator/index.vue'
 import EditDir from './edit-dir/index.vue'
 import FileUpload from './file-upload/index.vue'
 import FileShare from './file-share/index.vue'
+import FileRename from './file-rename/index.vue'
 
 @Component({
-  components: { FileList, FileThumbnail, FileNavigator, EditDir, FileUpload, FileShare }
+  components: { FileList, FileThumbnail, FileNavigator, EditDir, FileUpload, FileShare, FileRename }
 })
 export default class FileResult extends Vue {
     @Prop(Number) parentId!: number
@@ -112,16 +114,18 @@ export default class FileResult extends Vue {
     }
 
     @Provide() onDownload (file?: any) {
-      if (!file) {
+      if (!this.validate(file)) return
+      if (!file && this.checkedRows.length > 1) {
         this.$message.info('暂不支持批量下载')
         return
       }
-      if (file.dir) {
+      let row = file || this.checkedRows[0]
+      if (row.dir) {
         this.$message.info('暂不支持下载文件夹')
         return
       }
-      downloadFile(file.id).then(data => {
-        download(data, file.name)
+      downloadFile(row.id).then(data => {
+        download(data, row.name)
       })
     }
 
@@ -136,8 +140,18 @@ export default class FileResult extends Vue {
       })
     }
 
-    onRename (file?: any) {
-
+    @Provide() onRename (file?: any) {
+      if (!this.validate(file)) return
+      if (!file && this.checkedRows.length > 1) {
+        this.$message.info('只能选择一条记录')
+        return
+      }
+      let row = file || this.checkedRows[0]
+      let $e = this.$refs.fileRename as any 
+      $e.rename(row).then(() => {
+        this.$message.success('重命名成功')
+        this.refresh()
+      })
     }
 
     onCopyTo (file?: any) {
