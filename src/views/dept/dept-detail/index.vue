@@ -1,17 +1,22 @@
 <template>
     <div class="p-3">
-        <div>
-          <section-header>基本信息</section-header>
-          <div v-if="dept">
-                <span>
-                    <span> <span class="text-secondary mr-3">部门名称:</span> <span>{{dept && dept.name}}</span></span>
-                </span>
-            </div>
-        </div>
+        <div v-if="dept">
+          <div>
+            <section-header>基本信息</section-header>
+            <div>
+                  <span>
+                      <span> <span class="text-secondary mr-3">部门名称:</span> <span>{{dept && dept.name}}</span></span>
+                  </span>
+              </div>
+          </div>
 
-        <div class="mt-4">
-          <section-header>权限列表</section-header>
-          <authority-list :principle-id="id" :is-user="false" v-if="dept"></authority-list>
+          <div class="mt-4">
+            <section-header>权限列表</section-header>
+            <authority-list :principle-id="id" :is-user="false" v-if="dept"></authority-list>
+          </div>
+        </div>
+        <div v-else>
+          <span>暂无数据</span>
         </div>
     </div>
 </template>

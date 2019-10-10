@@ -5,6 +5,8 @@ import zhHans from 'vua/src/locale/zh-Hans'
 import { Auth, Http } from '@pat-fet/web-vue-utils'
 import { login, logout, loadPrinciple } from '@/api/auth'
 import SvgPlugin from './svg'
+import 'viewerjs/dist/viewer.css'
+import Viewer from 'v-viewer'
 
 export default function install (): void {
   Vue.use(vua, {
@@ -27,4 +29,6 @@ export default function install (): void {
   })
 
   Vue.use(SvgPlugin, {})
+
+  Vue.use(Viewer)
 }

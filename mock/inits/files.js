@@ -3,22 +3,25 @@ import Mock from 'mockjs'
 // copy from client
 const map = {
   // image
-  'image/gif': 'gif',
-  'image/x-icon': 'ico',
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'application/x-bmp': 'png',
-  'image/': 'image',
+  'gif': 'gif',
+  'ico': 'ico',
+  'jpg': 'jpg',
+  'jpeg': 'jpg',
+  'png': 'png',
 
   // office
-  'application/msword': 'word',
-  'application/vnd.ms-excel': 'excel',
-  'application/vnd.ms-powerpoint': 'ppt',
+  'doc': 'word',
+  'docx': 'word',
+  'xls': 'excel',
+  'xlsx': 'excel',
+  'ppt': 'ppt',
+  'pptx': 'ppt',
 
   // pdf
-  'application/pdf': 'pdf'
+  'pdf': 'pdf'
 
   // audio
+
 }
 
 function randomContentType () {

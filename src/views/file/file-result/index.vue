@@ -40,6 +40,7 @@
         <file-upload ref="fileUpload"></file-upload>
         <file-share ref="fileShare"></file-share>
         <file-rename ref="fileRename"></file-rename>
+        <file-preview :rows="dataSource" :visible.sync="previewVisible"></file-preview>
     </div>
 </template>
 
@@ -71,6 +72,8 @@ export default class FileResult extends Vue {
 
     loading: boolean = false
 
+    previewVisible: boolean = false
+
     onSelectView (view: 'list' | 'thumbnail') {
       this.view = view
     }
@@ -82,6 +85,8 @@ export default class FileResult extends Vue {
     @Provide() onPreview (row: any) {
       if (row.dir) {
         this.$router.push({ path: '/file', query: { id: row.id } })
+      } else {
+        this.previewVisible = true
       }
     }
 
@@ -147,7 +152,7 @@ export default class FileResult extends Vue {
         return
       }
       let row = file || this.checkedRows[0]
-      let $e = this.$refs.fileRename as any 
+      let $e = this.$refs.fileRename as any
       $e.rename(row).then(() => {
         this.$message.success('重命名成功')
         this.refresh()
@@ -160,6 +165,10 @@ export default class FileResult extends Vue {
 
     onMoveTo (file?: any) {
 
+    }
+
+    disabled (type: 'share' | 'download' | 'delete' | 'rename', file?: any) {
+      // TODO
     }
 
     refresh () {

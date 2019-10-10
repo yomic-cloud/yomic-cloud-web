@@ -22,7 +22,7 @@ export class HeaderConfig {
 export class AppConfig {
     dark: boolean = false
 
-    primary: string = ''
+    primary: string = '#1890ff'
 
     sider: SiderConfig = new SiderConfig()
 
