@@ -61,6 +61,7 @@ import { queryUsers, deleteUser } from '@/api/user'
 import { queryDepts } from '@/api/dept'
 import UserAuthority from './authority/index.vue'
 import EditUser from './edit-user/index.vue'
+import { clone } from '@/helpers/lang'
 
 @Component({
   components: { UserAuthority, EditUser }
@@ -124,7 +125,7 @@ export default class User extends Vue {
 
     query () {
       this.loading = true
-      queryUsers(this.form).then(data => {
+      queryUsers(clone(this.form, true)).then(data => {
         this.dataSource = data || []
       }).finally(() => {
         this.loading = false

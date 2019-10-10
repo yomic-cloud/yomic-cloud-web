@@ -1,11 +1,14 @@
 <template>
   <div class="my-3">
+    <div class="m-3">
+      <a @click="$router.go(-1)"> <v-icon type="arrow-left"></v-icon> 返回</a>
+    </div>
     <v-tabs v-model="value" position="left" :class="[$style.tabs]">
       <v-tab-pane name="basic" label="基本设置">
-        <basic-setting></basic-setting>
+        <basic-setting v-if="value === 'basic'"></basic-setting>
       </v-tab-pane>
       <v-tab-pane name="security" label="安全设置">
-        <security-setting></security-setting>
+        <security-setting v-if="value === 'security'"></security-setting>
       </v-tab-pane>
     </v-tabs>
   </div>

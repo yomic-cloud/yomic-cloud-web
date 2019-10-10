@@ -6,7 +6,7 @@
                 Vua Pro
             </div>
 
-            <div>
+            <form @submit.prevent>
                 <div class="mb-3">
                     <v-input name="username" v-model.trim="form.username" placeholder="输入账号" size="lg" block prefix="user" maxlength="32"></v-input>
                 </div>
@@ -19,7 +19,7 @@
                 </div>
 
                 <v-button type="primary" size="lg" block @click="onLogin" :loading="loading">登 录</v-button>
-            </div>
+            </form>
         </div>
     </div>
 </template>
@@ -32,7 +32,7 @@ import { Vue, Component } from 'vue-property-decorator'
 export default class Login extends Vue {
     form = {
       username: '',
-      passworrd: ''
+      password: ''
     }
 
     loading: boolean = false

@@ -7,6 +7,7 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: `${HOME}`,
     component: () => import('@/views/layout/index.vue'),
+    redirect: { path: '/file', query: { id: '-2' } },
     meta: { pid: `${HOME}`, cname: '首页' },
     children: [
       {

@@ -5,9 +5,6 @@ const user = [
     pid: `${HOME}`,
     children: [
       {
-        pid: `dashboard`
-      },
-      {
         pid: `file`
       },
       {
@@ -26,6 +23,15 @@ const admin = [
     children: [
       {
         pid: `dashboard`
+      },
+      {
+        pid: `file`
+      },
+      {
+        pid: `share`
+      },
+      {
+        pid: `recycle`
       }
     ]
   }
