@@ -15,7 +15,7 @@
             </v-checkbox-group>
           </div>
           <div class="border-left pl-3">
-            <file-selector :id.sync="form.fileId"></file-selector>
+            <file-selector :id.sync="fileId" :readonly="isEdit"></file-selector>
           </div>
         </div>
 
@@ -38,16 +38,23 @@ import FileSelector from './file-selector/index.vue'
   components: { FileSelector }
 })
 export default class EditAuthority extends Vue {
-  authority: any = null
+  row: any = null
 
-  principleId: number | null = null
+  get principleId () {
+    return this.row && this.row.principleId
+  }
 
-  isUser: boolean = false
+  get isUser () {
+    return this.row && this.row.isUser
+  }
+
+  get fileId () {
+    return this.row && this.row.fileId
+  }
 
   umasks = UMASK
 
   form: any = {
-    fileId: null,
     umask: 0,
     set bits (value: number[]) {
       this.umask = toUmask(value)
@@ -80,7 +87,7 @@ export default class EditAuthority extends Vue {
   }
 
   get isEdit (): boolean {
-    return !!this.authority
+    return !!(this.row && this.row.id)
   }
 
   get actualVisible () {
@@ -95,22 +102,19 @@ export default class EditAuthority extends Vue {
     return this.isEdit ? '编辑文件权限' : '新增文件权限'
   }
 
-  add (principleId: number, isUser: boolean): Promise<any> {
-    this.authority = null
-    this.principleId = principleId
-    this.isUser = isUser
+  add (row): Promise<any> {
+    this.row = row || null
     return this.init()
   }
 
-  edit (authority: any) {
-    this.authority = authority || null
+  edit (row: any) {
+    this.row = row || null
     return this.init()
   }
 
   init (): Promise<any> {
     let origin = {
-      fileId: (this.authority && this.authority.fileId) || null,
-      umask: (this.authority && this.authority.umask) || 0
+      umask: (this.row && this.row.umask) || 0
     }
     Object.assign(this.form, origin)
     this.visible = true
@@ -136,7 +140,7 @@ export default class EditAuthority extends Vue {
     const vm = this
     let req: any = this.generateReq()
     if (!validate()) return Promise.reject(new Error('validate fail'))
-    if (this.isEdit) return patchAuthority(this.authority.id, false, req)
+    if (this.isEdit) return patchAuthority(this.row.id, false, req)
     return addAuthority(req)
 
     function validate (): boolean {
@@ -150,11 +154,10 @@ export default class EditAuthority extends Vue {
 
   generateReq () {
     let req: any = {}
-    let isUser = this.isEdit ? this.authority.isUser : this.isUser
-    let principleId = this.isEdit ? this.authority.principleId : this.principleId
-    Object.assign(req, this.form, { isUser, principleId })
+    let { isUser, principleId, fileId } = this
+    Object.assign(req, this.form, { isUser, principleId, fileId })
     if (this.isEdit) {
-      req.id = this.authority && this.authority.id
+      req.id = this.row && this.row.id
     }
     return req
   }

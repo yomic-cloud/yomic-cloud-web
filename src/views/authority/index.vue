@@ -4,7 +4,7 @@
             <v-button type="text" size="sm" color="primary" @click="onAdd">新增权限</v-button>
         </div>
         <v-table :data-source="dataSource">
-            <v-table-column prop="fileName" label="文件/文件夹"></v-table-column>
+            <v-table-column prop="filePath" label="文件/文件夹"></v-table-column>
             <v-table-column prop="umask" label="权限">
             <template slot-scope="{row}">{{row.umask | umask}}</template>
             </v-table-column>

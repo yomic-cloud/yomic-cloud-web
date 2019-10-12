@@ -42,8 +42,8 @@
                 </v-table-column>
                 <v-table-column prop="opt" label="操作" fixed="right" width="120px">
                     <template slot-scope="{row}">
-                        <span class="icon-btn" @click="onEdit(row)"><v-icon type="edit"></v-icon></span>
-                        <span class="ml-3 icon-btn" @click="onDelete(row.id)"><v-icon type="delete"></v-icon></span>
+                        <span class="icon-btn" @click="onEdit(row)" title="编辑"><v-icon type="edit"></v-icon></span>
+                        <span class="ml-3 icon-btn" @click="onDelete(row.id)" title="删除"><v-icon type="delete"></v-icon></span>
                         <span class="ml-3 icon-btn" @click="onViewAuthority(row.id)" title="查看权限"><v-icon type="eye-o"></v-icon></span>
                     </template>
                 </v-table-column>

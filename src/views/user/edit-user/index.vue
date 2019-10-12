@@ -1,9 +1,16 @@
 <template>
     <div>
-      <v-modal :visible.sync="actualVisible" width="30vw" :title="title">
+      <v-modal :visible.sync="actualVisible" width="480px" :title="title">
         <v-form ref="form" :rules="rules" :model="form" label-width="80px" label-position="left" class="ml-3" v-if="visible">
           <v-form-item label="用户名" prop="username" required>
             <v-input clearable v-model="form.username" maxlength="16" :disabled="isEdit"></v-input>
+          </v-form-item>
+
+          <v-form-item label="密码" prop="password" required v-if="!isEdit">
+            <div class="d-flex align-items-center">
+              <v-input clearable v-model="form.password" maxlength="16" :disabled="isEdit"></v-input>
+              <v-button type="outline" color="info" class="ml-2" @click="onGenPassword">随机生成</v-button>
+            </div>
           </v-form-item>
 
           <v-form-item label="归属部门" prop="deptId">
@@ -12,11 +19,23 @@
             </v-select>
           </v-form-item>
 
-          <v-form-item label="中文名" prop="cname">
+          <v-form-item label="中文名" prop="cname" required>
             <v-input clearable v-model="form.cname" maxlength="16"></v-input>
           </v-form-item>
 
+          <v-form-item label="角色" prop="role" required>
+            <v-radio-group v-model="form.role">
+              <v-radio label="SUPER">超级管理员</v-radio>
+              <v-radio label="ADMIN">文件夹管理员</v-radio>
+              <v-radio label="USER">普通用户</v-radio>
+            </v-radio-group>
+          </v-form-item>
+
           <v-form-item label="ip" prop="ip">
+            <span slot="label">
+              <span>IP: </span>
+              <v-tooltip content="例如：10.192.168.1-10,10.192.168.20"><v-icon type="question-circle"></v-icon></v-tooltip>
+            </span>
             <v-input clearable v-model="form.ip" maxlength="64"></v-input>
           </v-form-item>
 
@@ -41,6 +60,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { queryDepts } from '@/api/dept'
 import { addUser, patchUser } from '@/api/user'
+import { randomString } from '@/helpers/lang'
 
 @Component
 export default class EditUser extends Vue {
@@ -50,15 +70,26 @@ export default class EditUser extends Vue {
 
   form = {
     username: '',
+    password: '',
     cname: '',
     deptId: null,
+    role: 'USER',
     ip: '',
-    status: true
+    status: true,
+    get roles () {
+      return this.role ? [this.role] : []
+    }
   }
 
   rules = {
     username: [
       { validator: 'required', message: '用户名必填', trigger: 'blur' }
+    ],
+    password: [
+      { validator: 'required', message: '密码必填', trigger: 'blur' }
+    ],
+    cname: [
+      { validator: 'required', message: '中文名必填', trigger: 'blur' }
     ]
   }
 
@@ -84,6 +115,10 @@ export default class EditUser extends Vue {
     return this.isEdit ? '编辑用户' : '新增用户'
   }
 
+  onGenPassword () {
+    this.form.password = randomString()
+  }
+
   add (): Promise<any> {
     this.user = null
     return this.init()
@@ -95,13 +130,16 @@ export default class EditUser extends Vue {
   }
 
   init (): Promise<any> {
-    this.form = {
+    const origin = {
       username: (this.user && this.user.username) || '',
+      password: '',
       cname: (this.user && this.user.cname) || '',
       deptId: (this.user && this.user.deptId) || null,
+      role: (this.user && this.user.roles && this.user.roles[0]) || 'USER',
       ip: (this.user && this.user.ip) || '',
       status: (this.user && this.user.status) || true
     }
+    Object.assign(this.form, origin)
     this.visible = true
     this.loadDepts()
     return new Promise((resolve, reject) => {

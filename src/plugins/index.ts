@@ -35,7 +35,8 @@ export default function install (): void {
       code: 'code',
       msg: 'message',
       data: 'data',
-      successCode: '000000'
+      successCode: '000000',
+      expiredCode: '100000'
     }
   })
 
