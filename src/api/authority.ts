@@ -51,13 +51,13 @@ export function addAuthority (req: AuthorityAddReq) {
 }
 
 export function patchAuthority (id: number, isUser: boolean, req: AuthorityPatchReq) {
-  return http().patch<void>(`/authorities/${id}`, req, { params: { isUser: isUser || undefined } })
+  return http().patch<void>(`/authorities/${id}`, req, { params: { isUser } })
 }
 
 export function getAuthority (id: number, isUser: boolean) {
-  return http().get<AuthorityRes>(`/authorities/${id}`, { params: { isUser: isUser || undefined } })
+  return http().get<AuthorityRes>(`/authorities/${id}`, { params: { isUser: isUser } })
 }
 
 export function deleteAuthority (id: number, isUser: boolean) {
-  return http().delete<void>(`/authorities/${id}`, { params: { isUser: isUser || undefined } })
+  return http().delete<void>(`/authorities/${id}`, { params: { isUser: isUser } })
 }

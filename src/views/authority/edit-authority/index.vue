@@ -13,9 +13,18 @@
                 </v-col>
               </v-row>
             </v-checkbox-group>
+
+            <div class="mt-4 d-flex align-items-center">
+              <span class="mr-2">有效天数: </span>
+              <v-select v-model="form.validDays" clearable class="w-8">
+                <v-option label="1天" :value="1"></v-option>
+                <v-option label="3天" :value="3"></v-option>
+                <v-option label="7天" :value="7"></v-option>
+              </v-select>
+            </div>
           </div>
           <div class="border-left pl-3">
-            <file-selector :id.sync="fileId" :readonly="isEdit"></file-selector>
+            <file-selector :id.sync="form.fileId" :readonly="isEdit"></file-selector>
           </div>
         </div>
 
@@ -48,13 +57,11 @@ export default class EditAuthority extends Vue {
     return this.row && this.row.isUser
   }
 
-  get fileId () {
-    return this.row && this.row.fileId
-  }
-
   umasks = UMASK
 
   form: any = {
+    fileId: null,
+    validDays: null,
     umask: 0,
     set bits (value: number[]) {
       this.umask = toUmask(value)
@@ -114,6 +121,7 @@ export default class EditAuthority extends Vue {
 
   init (): Promise<any> {
     let origin = {
+      fileId: (this.row && this.row.fileId) || null,
       umask: (this.row && this.row.umask) || 0
     }
     Object.assign(this.form, origin)
@@ -140,11 +148,11 @@ export default class EditAuthority extends Vue {
     const vm = this
     let req: any = this.generateReq()
     if (!validate()) return Promise.reject(new Error('validate fail'))
-    if (this.isEdit) return patchAuthority(this.row.id, false, req)
+    if (this.isEdit) return patchAuthority(this.row.id, this.isUser, req)
     return addAuthority(req)
 
     function validate (): boolean {
-      if (!req.fileId) {
+      if (!req.fileId && !vm.isEdit) {
         vm.$message.warning('请选择文件/文件夹')
         return false
       }
@@ -154,10 +162,12 @@ export default class EditAuthority extends Vue {
 
   generateReq () {
     let req: any = {}
-    let { isUser, principleId, fileId } = this
-    Object.assign(req, this.form, { isUser, principleId, fileId })
+    let { isUser, principleId } = this
+    Object.assign(req, this.form)
     if (this.isEdit) {
       req.id = this.row && this.row.id
+    } else {
+      Object.assign(req, { isUser, principleId })
     }
     return req
   }

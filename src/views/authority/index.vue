@@ -37,7 +37,8 @@ export default class Authority extends Vue {
 
     onAdd () {
       const $e = this.$refs.editAuthority as EditAuthority
-      $e.add(this.principleId, this.isUser).then(() => {
+      let row = { principleId: this.principleId, isUser: this.isUser }
+      $e.add(row).then(() => {
         this.$message.success('添加成功')
         this.loadData()
       })
@@ -52,7 +53,7 @@ export default class Authority extends Vue {
     }
 
     onDelete (id: number) {
-      deleteAuthority(id, false).then(() => {
+      deleteAuthority(id, this.isUser).then(() => {
         this.$message.success('删除成功')
         this.loadData()
       })

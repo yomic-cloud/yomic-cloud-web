@@ -59,7 +59,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { queryUsers, deleteUser } from '@/api/user'
 import { queryDepts } from '@/api/dept'
-import UserAuthority from './authority/index.vue'
+import UserAuthority from './user-authority/index.vue'
 import EditUser from './edit-user/index.vue'
 import { clone } from '@/helpers/lang'
 
