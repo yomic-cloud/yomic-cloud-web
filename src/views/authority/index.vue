@@ -8,6 +8,7 @@
             <v-table-column prop="umask" label="权限">
             <template slot-scope="{row}">{{row.umask | umask}}</template>
             </v-table-column>
+            <v-table-column prop="validDays" label="有效天数"></v-table-column>
             <v-table-column prop="opt" label="操作" fixed="right" width="120px">
                 <template slot-scope="{row}">
                     <span class="icon-btn" @click="onEdit(row)"><v-icon type="edit"></v-icon></span>

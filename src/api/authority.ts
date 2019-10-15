@@ -13,7 +13,7 @@ export interface AuthorityQueryRes {
   idUser: boolean
   isDir: boolean
   umask: number
-  expiryTime?: string
+  validDays?: number
   // principleId: number
   // isUser: boolean
   // fileName: string
@@ -24,12 +24,12 @@ export interface AuthorityAddReq {
   principleId: number
   fileId: number
   umask: number
-  expiryTime?: string
+  validDays?: number
 }
 
 export interface AuthorityPatchReq {
   umask?: number
-  expiryTime?: string
+  validDays?: number
 }
 
 export interface AuthorityRes {
@@ -39,7 +39,7 @@ export interface AuthorityRes {
   idUser: boolean
   isDir: boolean
   umask: number
-  expiryTime?: string
+  validDays?: number
 }
 
 export function queryAuthorities (req: AuthorityQueryReq) {

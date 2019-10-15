@@ -40,17 +40,19 @@
                 <v-table-column prop="status" label="状态">
                   <template slot-scope="{row}">{{row.status | transcode('status')}}</template>
                 </v-table-column>
-                <v-table-column prop="opt" label="操作" fixed="right" width="120px">
+                <v-table-column prop="opt" label="操作" fixed="right" width="160px">
                     <template slot-scope="{row}">
                         <span class="icon-btn" @click="onEdit(row)" title="编辑"><v-icon type="edit"></v-icon></span>
                         <span class="ml-3 icon-btn" @click="onDelete(row.id)" title="删除"><v-icon type="delete"></v-icon></span>
                         <span class="ml-3 icon-btn" @click="onViewAuthority(row.id)" title="查看权限"><v-icon type="eye-o"></v-icon></span>
+                        <span class="ml-3 icon-btn" @click="onViewUserFile(row)" title="管理员目录"><v-icon type="folder-add"></v-icon></span>
                     </template>
                 </v-table-column>
             </v-table>
         </div>
         <user-authority :visible.sync="authorityVisible" v-bind="authorityProps"></user-authority>
         <edit-user ref="editUser"></edit-user>
+        <user-file ref="userFile"></user-file>
     </div>
 </template>
 
@@ -61,10 +63,11 @@ import { queryUsers, deleteUser } from '@/api/user'
 import { queryDepts } from '@/api/dept'
 import UserAuthority from './user-authority/index.vue'
 import EditUser from './edit-user/index.vue'
+import UserFile from './user-file/index.vue'
 import { clone } from '@/helpers/lang'
 
 @Component({
-  components: { UserAuthority, EditUser }
+  components: { UserAuthority, EditUser, UserFile }
 })
 export default class User extends Vue {
     form = {
@@ -121,6 +124,13 @@ export default class User extends Vue {
     onViewAuthority (id: any) {
       this.authorityVisible = true
       this.authorityProps.principleId = id
+    }
+
+    onViewUserFile (row: any) {
+      const $e = this.$refs.userFile as UserFile
+      $e.view(row).then(() => {
+        this.$message.success('修改管理员目录成功')
+      })
     }
 
     query () {

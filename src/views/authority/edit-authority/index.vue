@@ -16,7 +16,8 @@
 
             <div class="mt-4 d-flex align-items-center">
               <span class="mr-2">有效天数: </span>
-              <v-select v-model="form.validDays" clearable class="w-8">
+              <v-select v-model="form.validDays" class="w-8">
+                <v-option label="永久有效" :value="-1"></v-option>
                 <v-option label="1天" :value="1"></v-option>
                 <v-option label="3天" :value="3"></v-option>
                 <v-option label="7天" :value="7"></v-option>
@@ -61,7 +62,7 @@ export default class EditAuthority extends Vue {
 
   form: any = {
     fileId: null,
-    validDays: null,
+    validDays: -1,
     umask: 0,
     set bits (value: number[]) {
       this.umask = toUmask(value)
@@ -109,7 +110,7 @@ export default class EditAuthority extends Vue {
     return this.isEdit ? '编辑文件权限' : '新增文件权限'
   }
 
-  add (row): Promise<any> {
+  add (row: any): Promise<any> {
     this.row = row || null
     return this.init()
   }
@@ -121,6 +122,7 @@ export default class EditAuthority extends Vue {
 
   init (): Promise<any> {
     let origin = {
+      validDays: (this.row && this.row.validDays) || -1,
       fileId: (this.row && this.row.fileId) || null,
       umask: (this.row && this.row.umask) || 0
     }

@@ -22,6 +22,7 @@ export interface UserAddReq {
   cname: string
   ip?: string
   deptId?: number
+  files?: number[]
 }
 
 export interface UserPatchReq {
@@ -30,6 +31,7 @@ export interface UserPatchReq {
   ip?: string
   deptId?: number
   status?: boolean
+  files?: number[]
 }
 
 export interface UserRes {
