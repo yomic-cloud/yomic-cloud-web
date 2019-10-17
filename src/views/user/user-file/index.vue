@@ -2,7 +2,7 @@
     <div>
       <v-modal :visible.sync="actualVisible" width="640px" :title="title">
         <div>
-          <file-selector></file-selector>
+          <file-selector :ids.sync="form.files" multiple v-if="actualVisible"></file-selector>
         </div>
 
         <div slot="footer" class="text-right">

@@ -13,7 +13,7 @@
     "core-js": "^2.6.5",
     "nprogress": "^0.2.0",
     "v-viewer": "^1.4.2",
-    "vua": "^0.7.11",
+    "vua": "^0.7.14",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-property-decorator": "^8.1.0",

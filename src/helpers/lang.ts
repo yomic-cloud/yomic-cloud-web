@@ -35,3 +35,11 @@ export function range (start: number = 0, end: number, step: number = 1) {
   }
   return ret
 }
+
+export function unique<T> (list: T[], key?: string | number): T[] {
+  let map: any = {}
+  list.forEach((v: any) => {
+    map[key ? v[key] : v] = v
+  })
+  return Object.values(map)
+}

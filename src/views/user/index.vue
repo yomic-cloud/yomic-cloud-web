@@ -130,6 +130,7 @@ export default class User extends Vue {
       const $e = this.$refs.userFile as UserFile
       $e.view(row).then(() => {
         this.$message.success('修改管理员目录成功')
+        this.query()
       })
     }
 
