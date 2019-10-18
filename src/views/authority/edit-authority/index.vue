@@ -24,8 +24,8 @@
               </v-select>
             </div>
           </div>
-          <div class="border-left pl-3">
-            <file-selector :id.sync="form.fileId" :readonly="isEdit"></file-selector>
+          <div :class="[$style.bodyRight]" class="border-left pl-3">
+            <file-selector :ids.sync="form.ids" :disabled="isEdit" ></file-selector>
           </div>
         </div>
 
@@ -42,10 +42,10 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { addAuthority, patchAuthority } from '@/api/authority'
 import { UMASK, toUmask, toArray, allUmask } from '@/common/umask'
-import FileSelector from './file-selector/index.vue'
+// import FileSelector from './file-selector/index.vue'
 
 @Component({
-  components: { FileSelector }
+  components: { }
 })
 export default class EditAuthority extends Vue {
   row: any = null
@@ -69,6 +69,12 @@ export default class EditAuthority extends Vue {
     },
     get bits () {
       return toArray(this.umask)
+    },
+    set ids (ids) {
+      this.fileId = ids[0] || null
+    },
+    get ids () {
+      return this.fileId ? [this.fileId] : []
     }
   }
 
@@ -184,6 +190,11 @@ export default class EditAuthority extends Vue {
 }
 
 .bodyLeft {
+  width: 50%;
+  flex: 0 0 auto;
+}
+
+.bodyRight {
   width: 50%;
   flex: 0 0 auto;
 }

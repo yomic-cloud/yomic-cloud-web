@@ -68,7 +68,9 @@ export default class FileSelector extends Vue {
     const vm = this
     this.$nextTick(() => {
       if (!this.multiple) {
-        vm.setCheckedKeys([node.data.id])
+        let id = node.data.id
+        let has = this.ids.some(v => v === id)
+        vm.setCheckedKeys(has ? [] : [id])
       } else {
         removeCascade(node)
       }
@@ -148,7 +150,8 @@ export default class FileSelector extends Vue {
     const $e = this.$refs.tree as any
     let keys = $e.getCheckedKeys()
     let extraKeys = this.ids.filter(v => !this.treeFileMap[v])
-    this.updateIds(unique([...keys, ...extraKeys]))
+    let ids = this.multiple ? unique([...keys, ...extraKeys]) : keys
+    this.updateIds(ids)
   }
 
   putInTreeFileMap (ret: any[] = []) {
@@ -168,6 +171,7 @@ export default class FileSelector extends Vue {
   }
 
   onRemove (id: number) {
+    if (this.disabled) return
     let ret = this.ids.filter(v => v !== id)
     this.updateIds(ret)
     this.setCheckedKeys(ret)

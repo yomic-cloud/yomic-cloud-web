@@ -44,8 +44,8 @@
                     <template slot-scope="{row}">
                         <span class="icon-btn" @click="onEdit(row)" title="编辑"><v-icon type="edit"></v-icon></span>
                         <span class="ml-3 icon-btn" @click="onDelete(row.id)" title="删除"><v-icon type="delete"></v-icon></span>
-                        <span class="ml-3 icon-btn" @click="onViewAuthority(row.id)" title="查看权限"><v-icon type="eye-o"></v-icon></span>
-                        <span class="ml-3 icon-btn" @click="onViewUserFile(row)" title="管理员目录"><v-icon type="folder-add"></v-icon></span>
+                        <span class="ml-3 icon-btn" @click="onViewAuthority(row.id)" title="查看权限"><v-icon type="safety"></v-icon></span>
+                        <span class="ml-3 icon-btn" :disabled="!hasAdminRole(row)" @click="onViewUserFile(row)" title="管理员目录"><v-icon type="folder-add"></v-icon></span>
                     </template>
                 </v-table-column>
             </v-table>
@@ -132,6 +132,10 @@ export default class User extends Vue {
         this.$message.success('修改管理员目录成功')
         this.query()
       })
+    }
+
+    hasAdminRole (row: any) {
+      return (row.roles || []).includes('ADMIN')
     }
 
     query () {
