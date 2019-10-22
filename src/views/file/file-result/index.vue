@@ -40,7 +40,7 @@
         <file-upload ref="fileUpload"></file-upload>
         <file-share ref="fileShare"></file-share>
         <file-rename ref="fileRename"></file-rename>
-        <file-preview :rows="dataSource" :visible.sync="previewVisible"></file-preview>
+        <file-preview ref="filePreview"></file-preview>
     </div>
 </template>
 
@@ -72,8 +72,6 @@ export default class FileResult extends Vue {
 
     loading: boolean = false
 
-    previewVisible: boolean = false
-
     onSelectView (view: 'list' | 'thumbnail') {
       this.view = view
     }
@@ -86,7 +84,8 @@ export default class FileResult extends Vue {
       if (row.dir) {
         this.$router.push({ path: '/file', query: { id: row.id } })
       } else {
-        this.previewVisible = true
+        const $e = this.$refs.filePreview as any
+        $e.preview(row, this.dataSource)
       }
     }
 

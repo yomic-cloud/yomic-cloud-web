@@ -1,27 +1,34 @@
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
+import { getType } from '@/common/content-type'
 import ImagePreview from './image-preview/index.vue'
+import OfficePreview from './office-preview/index.vue'
 
 @Component({
-  components: { ImagePreview }
+  components: { ImagePreview, OfficePreview }
 })
 export default class FilePreview extends Vue {
-  @Prop(Boolean) visible!: boolean
+  visible: boolean = false
 
-  @Prop() row!: any
+  row: any = null
 
-  @Prop() rows!: any[]
+  rows: any[] = []
 
-  @Emit('update:visible') updateVisible (visible: boolean) {}
+  get type (): 'image' | 'video' | 'audio' | 'office' | string {
+    if (!this.row) return ''
+    return getType(this.row.contentType || '')
+  }
 
-  get type (): 'image' | 'video' | 'audio' | 'other' {
-    return 'image'
+  preview (row: any, rows: any = []) {
+    this.row = row || null
+    this.rows = rows
+    this.visible = true
   }
 
   render (h: any) {
-    let props = this.$props
+    let props = { row: this.row, rows: this.rows }
     let on = {
-      close: () => this.updateVisible(false)
+      close: () => { this.visible = false }
     }
     if (!this.visible) return h('div')
     return h(`${this.type}-preview`, { props, on })
