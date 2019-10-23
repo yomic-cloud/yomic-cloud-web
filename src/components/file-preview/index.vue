@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
+import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator'
 import { getType } from '@/common/content-type'
 import ImagePreview from './image-preview/index.vue'
 import OfficePreview from './office-preview/index.vue'
@@ -26,12 +26,21 @@ export default class FilePreview extends Vue {
   }
 
   render (h: any) {
+    if (!this.visible || !this.type) return h('div')
     let props = { row: this.row, rows: this.rows }
     let on = {
       close: () => { this.visible = false }
     }
-    if (!this.visible) return h('div')
     return h(`${this.type}-preview`, { props, on })
+  }
+
+  @Watch('visible') visibleChange () {
+    if (this.visible) {
+      if (!this.type) {
+        this.$message.warning('该文件类型不支持预览')
+        this.visible = false
+      }
+    }
   }
 }
 </script>

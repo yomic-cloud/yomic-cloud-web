@@ -6,13 +6,14 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import BasePreview from '../BasePreview'
 import { previewFile } from '@/api/file'
-import { download } from '@/helpers/download'
+import { preview } from '@/helpers/download'
 
 @Component
 export default class OfficePreview extends mixins(BasePreview) {
   mounted () {
     previewFile(this.row.id).then(data => {
-      download(data, this.row.name + '.pdf')
+      preview(data, this.row.name + '.pdf')
+      this.close()
     })
   }
 }
