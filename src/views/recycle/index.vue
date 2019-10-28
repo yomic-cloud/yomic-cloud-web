@@ -19,7 +19,7 @@
 
         <v-table pageable row-key="id" :data-source="dataSource" @selection-change="onSelectionChange" height="calc(100vh - 300px)">
             <v-table-column type="selection" fixed="left" width="80px"></v-table-column>
-            <v-table-column prop="name" label="文件名"></v-table-column>
+            <v-table-column prop="path" label="文件名"></v-table-column>
             <v-table-column prop="size" label="大小"></v-table-column>
             <v-table-column prop="creationTime" label="删除时间"></v-table-column>
             <v-table-column prop="creationBy" label="删除人"></v-table-column>
@@ -36,7 +36,7 @@
 <script lang="ts">
 
 import { Vue, Component } from 'vue-property-decorator'
-import { queryRecycles, deleteRecycle } from '@/api/recycle'
+import { queryRecycles, deleteRecycles, recoverRecycles } from '@/api/recycle'
 
 @Component
 export default class Recycle extends Vue {
@@ -48,8 +48,7 @@ export default class Recycle extends Vue {
       if (!this.validate(id)) return
       this.$modal.confirm({ title: '确认', content: '确认删除文件，删除后将不能恢复？' }).then(() => {
         let ids: number[] = id ? [id] : this.checkedRows
-        let all = ids.map(v => deleteRecycle(v))
-        Promise.all(all).then(v => {
+        deleteRecycles(ids).then(() => {
           this.refresh()
         })
       })
@@ -59,8 +58,7 @@ export default class Recycle extends Vue {
       if (!this.validate(id)) return
       this.$modal.confirm({ title: '确认', content: '确认恢复文件？' }).then(() => {
         let ids: number[] = id ? [id] : this.checkedRows
-        let all = ids.map(v => deleteRecycle(v, true))
-        Promise.all(all).then(v => {
+        recoverRecycles(ids).then(() => {
           this.refresh()
         })
       })
@@ -84,9 +82,7 @@ export default class Recycle extends Vue {
 
     loadData () {
       queryRecycles({}).then(data => {
-        this.dataSource = (data || []).map(v => {
-          return Object.assign(v, { name: v.file.name, size: v.file.size })
-        })
+        this.dataSource = data || []
       })
     }
 

@@ -48,7 +48,7 @@
 
 import { Vue, Component, Prop, Watch, Provide } from 'vue-property-decorator'
 import { queryFiles, downloadFile } from '@/api/file'
-import { addRecycle } from '@/api/recycle'
+import { addRecycles, queryRecycles } from '@/api/recycle'
 import { download } from '@/helpers/download'
 import FileList from './file-list/index.vue'
 import FileThumbnail from './file-thumbnail/index.vue'
@@ -137,8 +137,7 @@ export default class FileResult extends Vue {
       if (!this.validate(file)) return
       this.$modal.confirm({ title: '确认', content: '确认删除文件？' }).then(() => {
         let ids: number[] = file ? [file.id] : this.checkedRows.map((v: any) => v.id)
-        let all = ids.map(v => addRecycle({ fileId: v }))
-        Promise.all(all).then(v => {
+        addRecycles({ files: ids }).then((data) => {
           this.refresh()
         })
       })

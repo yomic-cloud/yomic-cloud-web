@@ -1,7 +1,7 @@
 import { http } from '.'
 
 export interface RecycleQueryReq {
-    creationBy?: string
+    // creationBy?: string
 }
 
 export interface RecycleQueryRes {
@@ -13,6 +13,10 @@ export interface RecycleQueryRes {
 
 export interface RecycleAddReq {
     fileId: number
+}
+
+export interface RecycleAddInBatchReq {
+  files: number[]
 }
 
 export interface RecycleRes {
@@ -30,11 +34,22 @@ export function addRecycle (req: RecycleAddReq) {
   return http().post<number>(`/recycles`, req)
 }
 
+export function addRecycles (req: RecycleAddInBatchReq) {
+  return http().post<number[]>(`/recycles/batch`, req)
+}
+
 export function getRecycle (id: number) {
   return http().get<RecycleRes>(`/recycles/${id}`)
 }
 
-// 标注删除或还原
-export function deleteRecycle (id: number, recover: boolean = false) {
-  return http().delete<void>(`/recycles/${id}`, { params: { recover } })
+// 批量删除
+export function deleteRecycles (ids: number[]) {
+  const d = ids.join(',')
+  return http().delete<void>(`/recycles/batch/${d}`)
+}
+
+// 批量恢复
+export function recoverRecycles (ids: number[]) {
+  const d = ids.join(',')
+  return http().delete<void>(`/recycles/recover/${d}`)
 }
