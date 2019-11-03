@@ -1,139 +1,122 @@
 <template>
-  <div class="bg-2 p-3">
-    <div class="bg-base p-3 border-rounded" v-if="link">
-      <div class="d-flex justify-content-between">
-        <span>
-          <file-icon v-bind="linkIconProps"></file-icon>
-          <span class="ml-2 text-link">{{linkName}}</span>
-        </span>
-        <span>
-          <v-button type="outline" color="primary" icon="close-circle-o">取消分享</v-button>
-          <v-button type="outline" color="primary" icon="cloud-download-o" class="ml-2">下载</v-button>
-        </span>
-      </div>
+    <div>
+        <div class="d-flex justify-content-between align-content-center m-2">
+            <v-alert type="info" style="flex: 1 1 auto;">
+                <template slot="description">
+                    已选择 <span>{{checkedRows.length}}</span> 项
+                    <a class="ml-2" @click="onClearSelection">清空选择</a>
+                </template>
+            </v-alert>
+            <div class="ml-3">
+                <v-button color="primary" icon="rollback" :disabled="checkedRows.length < 1" @click="onCancel()">取消分享</v-button>
+            </div>
+        </div>
 
-      <div class="caption">
-        <span><span><v-icon type="clock-circle-o"></v-icon></span> <span class="ml-2">2019/09/07 12:34:45</span></span>
-        <span class="ml-3">失效时间：6小时</span>
-      </div>
-    </div>
-
-    <div class="bg-base p-3 mt-3 border-rounded">
-      <div class="d-flex justify-content-between align-content-center m-2">
-          <file-navigator :id="parentId" :link-id="link.id" v-if="link"></file-navigator>
-          <v-alert type="info" style="flex: 0 0 auto;" class="ml-5 w-14">
-              <template slot="description">
-                  已选择 <span>{{checkedRows.length}}</span> 项
-                  <a class="ml-2" @click="onClearSelection">清空选择</a>
+        <v-table pageable row-key="id" :data-source="dataSource" @selection-change="onSelectionChange" height="calc(100vh - 300px)">
+            <v-table-column type="selection" fixed="left" width="80px"></v-table-column>
+            <v-table-column prop="name" label="分享文件">
+              <template slot-scope="{row}">
+                <file-icon v-bind="iconProps(row)"></file-icon>
+                <span class="ml-2 text-link">{{row.fileName}}</span>
               </template>
-          </v-alert>
-      </div>
-
-      <file-list :data-source="dataSource" :checked-rows.sync="checkedRows"></file-list>
+            </v-table-column>
+            <v-table-column prop="code" label="链接">
+              <template slot-scope="{row}">
+                <span>
+                  <a @click="onLink(row)">{{resolveLink(row)}}</a>
+                  <v-button type="outline" size="sm" class="ml-2" @click="onCopy(row)">复制</v-button>
+                </span>
+              </template>
+            </v-table-column>
+            <v-table-column prop="password" label="提取码"></v-table-column>
+            <v-table-column prop="creationTime" label="分享时间"></v-table-column>
+            <v-table-column prop="creationBy" label="分享人"></v-table-column>
+            <v-table-column prop="expiryTime" label="失效时间"></v-table-column>
+            <v-table-column prop="opt" label="操作" fixed="right" width="80px">
+                <template slot-scope="{row}">
+                    <span class="icon-btn" @click="onCancel(row.id)"><v-icon type="rollback"></v-icon></span>
+                </template>
+            </v-table-column>
+        </v-table>
     </div>
-  </div>
 </template>
 
 <script lang="ts">
 
-import { Vue, Component, Provide, Watch } from 'vue-property-decorator'
-import { getLinkByCode, queryFilesByLink, downloadFileByLink } from '@/api/link'
-import { download } from '@/helpers/download'
-import FileList from './file-list/index.vue'
-import FileNavigator from './file-navigator/index.vue'
+import { Vue, Component } from 'vue-property-decorator'
+import { queryLinks, deleteLink } from '@/api/link'
+import { copy } from '@/helpers/copy'
 
-@Component({
-  components: {
-    FileList, FileNavigator
-  }
-})
+@Component
 export default class Link extends Vue {
-  link: any = null
+    dataSource: any[] = []
 
-  checkedRows: any = []
+    checkedRows: any = []
 
-  dataSource: any[] = []
-
-  loading: boolean = false
-
-  get code () {
-    return this.$route.params.code
-  }
-
-  get parentId () {
-    let parentId = this.$route.query.fileId
-    return parentId ? +parentId : null
-  }
-
-  get linkIconProps () {
-    let dir = true
-    let personal = false
-    let root = false
-    let contentType = ''
-    return { dir, personal, root, contentType }
-  }
-
-  get linkName () {
-    if (!this.link) return ''
-    return (this.link.files && this.link.files[0] && this.link.files[0].name) + '...'
-  }
-
-  onClearSelection () {
-    this.checkedRows = []
-  }
-
-  @Provide() onPreview (row: any) {
-    let path = this.$route.path
-    if (row.dir) {
-      this.$router.push({ path: path, query: { fileId: row.id } })
+    onCancel (id?: number) {
+      let ids = id ? [id] : this.checkedRows
+      deleteLink(ids).then(() => {
+        this.$message.success('已取消分享')
+        this.loadData()
+      })
     }
-  }
 
-  @Provide() onDownload (file?: any) {
-    if (!file) {
-      this.$message.info('暂不支持批量下载')
-      return
+    onSelectionChange (rows: any[]) {
+      this.checkedRows = rows || []
     }
-    if (file.dir) {
-      this.$message.info('暂不支持下载文件夹')
-      return
-    }
-    downloadFileByLink(this.link.id, file.id).then(data => {
-      download(data, file.name)
-    })
-  }
 
-  loadLink () {
-    if (!this.code) {
-      this.link = null
-      return
+    onClearSelection () {
+      this.checkedRows = []
     }
-    getLinkByCode(this.code).then(data => {
-      this.link = data || null
+
+    refresh () {
       this.loadData()
-    })
-  }
-
-  loadData () {
-    if (!this.link) {
-      this.dataSource = []
-      return
     }
-    this.loading = true
-    queryFilesByLink(this.link.id, this.parentId as any).then(data => {
-      this.dataSource = data || []
-    }).finally(() => {
-      this.loading = false
-    })
-  }
 
-  mounted () {
-    this.loadLink()
-  }
+    iconProps (row: any) {
+      let multiple = row.multiple
+      let dir = multiple ? false : row.dir
+      let personal = false
+      let root = false
+      let contentType = multiple ? 'multiple-share' : row.contentType
+      return { dir, personal, root, contentType }
+    }
 
-  @Watch('parentId') parentIdChange () {
-    this.loadData()
-  }
+    resolveName (row: any) {
+      return (row.files && row.files[0] && row.files[0].name) + '...'
+    }
+
+    resolveLink (row: any) {
+      return window.location.origin + `/#/share/${row.id}`
+    }
+
+    onLink (row: any) {
+      this.$router.push(`/share/${row.id}`)
+    }
+
+    onCopy (row: any) {
+      let url = this.resolveLink(row)
+      copy(url)
+      this.$message.success('已复制到剪切板')
+    }
+
+    loadData () {
+      queryLinks({}).then(data => {
+        this.dataSource = data || []
+      })
+    }
+
+    validate (id?: number) {
+      if (!id && this.checkedRows.length < 1) {
+        this.$message.info('请选择至少一条记录')
+        return false
+      }
+      return true
+    }
+
+    mounted () {
+      this.loadData()
+    }
 }
 </script>
 

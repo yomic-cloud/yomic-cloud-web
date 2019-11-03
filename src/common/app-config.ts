@@ -36,7 +36,7 @@ const store = new Vue({
   watch: {
     appConfig: {
       handler: function () {
-        saveStore(this.appConfig)
+        saveStore((this as any).appConfig)
       },
       deep: true
     }

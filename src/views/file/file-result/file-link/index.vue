@@ -41,9 +41,10 @@ import { Vue, Component } from 'vue-property-decorator'
 import { addLink, getLink } from '@/api/link'
 import { formatDate, addDays } from '@/helpers/date'
 import { copy } from '@/helpers/copy'
+import { randomString } from '@/helpers/lang'
 
 @Component
-export default class FileShare extends Vue {
+export default class FileLink extends Vue {
   files: any[] = []
 
   form = {
@@ -79,7 +80,7 @@ export default class FileShare extends Vue {
 
   get linkUrl () {
     if (!this.link) return ''
-    return window.location.origin + `/#/links/${this.link.code}`
+    return window.location.origin + `/#/share/${this.link.id}`
   }
 
   share (files: any[]) {
@@ -135,7 +136,9 @@ export default class FileShare extends Vue {
   generateReq () {
     let req: any = {}
     req.files = this.files.map(v => v.id)
-    req.encode = this.form.encode
+    if (this.form.encode) {
+      req.password = randomString()
+    }
     if (this.form.validDays) {
       req.expiredTime = formatDate(addDays(this.form.validDays as any))
     }

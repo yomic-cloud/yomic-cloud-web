@@ -38,7 +38,7 @@
 
         <edit-dir ref="editDir"></edit-dir>
         <file-upload ref="fileUpload"></file-upload>
-        <file-share ref="fileShare"></file-share>
+        <file-link ref="fileLink"></file-link>
         <file-rename ref="fileRename"></file-rename>
         <file-preview ref="filePreview"></file-preview>
     </div>
@@ -55,11 +55,11 @@ import FileThumbnail from './file-thumbnail/index.vue'
 import FileNavigator from './file-navigator/index.vue'
 import EditDir from './edit-dir/index.vue'
 import FileUpload from './file-upload/index.vue'
-import FileShare from './file-share/index.vue'
+import FileLink from './file-link/index.vue'
 import FileRename from './file-rename/index.vue'
 
 @Component({
-  components: { FileList, FileThumbnail, FileNavigator, EditDir, FileUpload, FileShare, FileRename }
+  components: { FileList, FileThumbnail, FileNavigator, EditDir, FileUpload, FileLink, FileRename }
 })
 export default class FileResult extends Vue {
     @Prop(Number) parentId!: number
@@ -111,7 +111,7 @@ export default class FileResult extends Vue {
         this.$message.info('请选择分享文件')
         return
       }
-      const $e = this.$refs.fileShare as FileShare
+      const $e = this.$refs.fileLink as FileLink
       $e.share(files).then(() => {
         // do nothing
       })

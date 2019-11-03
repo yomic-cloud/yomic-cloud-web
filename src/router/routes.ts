@@ -23,10 +23,10 @@ const routes: Array<RouteConfig> = [
         meta: { pid: `${HOME}.file`, cname: '全部文件' }
       },
       {
-        path: 'share',
-        name: 'share',
-        component: () => import('@/views/share/index.vue'),
-        meta: { pid: `${HOME}.share`, cname: '我的分享' }
+        path: 'link',
+        name: 'link',
+        component: () => import('@/views/link/index.vue'),
+        meta: { pid: `${HOME}.link`, cname: '我的分享' }
       },
       {
         path: 'recycle',
@@ -62,9 +62,9 @@ const routes: Array<RouteConfig> = [
     ]
   },
   {
-    path: '/links/:code',
-    name: 'links',
-    component: () => import('@/views/link/index.vue')
+    path: '/share/:id',
+    name: 'share',
+    component: () => import('@/views/share/index.vue')
   },
   // DON'T CHANGE BELOW
   {

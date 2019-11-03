@@ -11,13 +11,15 @@
 <script lang="ts">
 
 import { Vue, Component, Prop, Emit, Watch } from 'vue-property-decorator'
-import { getFileByLink } from '@/api/link'
+import { getFile } from '@/api/share'
 
 @Component
 export default class FileNavigator extends Vue {
     @Prop(Number) linkId!: number
 
     @Prop(Number) id!: number
+
+    @Prop(String) password!: string
 
     dataSource: any[] = []
 
@@ -51,7 +53,7 @@ export default class FileNavigator extends Vue {
         this.dataSource = ret
         return
       }
-      getFileByLink(this.linkId, this.id).then(data => {
+      getFile(this.linkId, this.password, this.id).then(data => {
         let parent = data
         while (parent) {
           ret.splice(0, 0, parent)

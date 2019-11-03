@@ -8,7 +8,7 @@ const user = [
         pid: `file`
       },
       {
-        pid: `share`
+        pid: `link`
       },
       {
         pid: `recycle`
@@ -28,7 +28,7 @@ const admin = [
         pid: `file`
       },
       {
-        pid: `share`
+        pid: `link`
       },
       {
         pid: `recycle`
@@ -48,7 +48,7 @@ const root = [
         pid: `file`
       },
       {
-        pid: `share`
+        pid: `link`
       },
       {
         pid: `recycle`

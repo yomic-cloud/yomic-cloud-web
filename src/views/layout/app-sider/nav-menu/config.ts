@@ -24,8 +24,8 @@ export const menus: Array<MenuOption> = [
   {
     name: '我的分享',
     icon: 'share-alt',
-    pid: `${HOME}.share`,
-    link: '/share'
+    pid: `${HOME}.link`,
+    link: '/link'
   },
   {
     name: '回收站',

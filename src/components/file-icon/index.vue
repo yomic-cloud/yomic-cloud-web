@@ -17,6 +17,9 @@ export default class FileIcon extends Vue {
   @Prop(Boolean) root!: boolean
 
   get icon (): string {
+    if (this.contentType === 'multiple-share') { //
+      return 'share-dir'
+    }
     if (this.dir) {
       if (this.root) {
         if (this.personal) return 'user-dir'
